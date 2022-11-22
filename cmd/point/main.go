@@ -71,20 +71,25 @@ func main() {
 		exit(fmt.Errorf("unable to load application"))
 		return
 	}
-	var app *vocab.Actor
-	err = vocab.OnCollectionIntf(res, func(col vocab.CollectionInterface) error {
-		app, err = vocab.ToActor(col.Collection().First())
-		return err
+	var app vocab.Actor
+	err = vocab.OnActor(res, func(actor *vocab.Actor) error {
+		app = *actor
+		return nil
 	})
 	if err != nil {
-		exit(fmt.Errorf("unable to load instance Actor: %w", err))
+		exit(fmt.Errorf("unable to load instance Service: %w", err))
+		return
+	}
+	if app.ID == "" {
+		exit(fmt.Errorf("instance Service was not found in storage"))
+		return
 	}
 
 	m := http.NewServeMux()
-	cfg := webfinger.NodeInfoConfig(*app, webfinger.WebInfo{})
-	ni := nodeinfo.NewService(cfg, webfinger.NodeInfoResolverNew(db, *app))
+	cfg := webfinger.NodeInfoConfig(app, webfinger.WebInfo{})
+	ni := nodeinfo.NewService(cfg, webfinger.NodeInfoResolverNew(db, app))
 
-	h := webfinger.New(*app, db)
+	h := webfinger.New(app, db)
 	m.HandleFunc("/.well-known/webfinger", h.HandleWebFinger)
 	m.HandleFunc("/.well-known/host-meta", h.HandleHostMeta)
 	m.HandleFunc("/.well-known/nodeinfo", ni.NodeInfoDiscover)

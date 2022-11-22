@@ -141,22 +141,25 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 			Href: id.String(),
 		},
 	}
-	urls := make(vocab.ItemCollection, 0)
-	if vocab.IsItemCollection(a.URL) {
-		urls = append(urls, a.URL.(vocab.ItemCollection)...)
-	} else {
-		urls = append(urls, a.URL.(vocab.IRI))
+	if !vocab.IsNil(a.URL) {
+		urls := make(vocab.ItemCollection, 0)
+		if vocab.IsItemCollection(a.URL) {
+			urls = append(urls, a.URL.(vocab.ItemCollection)...)
+		} else {
+			urls = append(urls, a.URL.(vocab.IRI))
+		}
+
+		for _, u := range urls {
+			url := u.GetLink().String()
+			wf.Aliases = append(wf.Aliases, url)
+			wf.Links = append(wf.Links, link{
+				Rel:  "https://webfinger.net/rel/profile-page",
+				Type: "text/html",
+				Href: url,
+			})
+		}
 	}
 
-	for _, u := range urls {
-		url := u.GetLink().String()
-		wf.Aliases = append(wf.Aliases, url)
-		wf.Links = append(wf.Links, link{
-			Rel:  "https://webfinger.net/rel/profile-page",
-			Type: "text/html",
-			Href: url,
-		})
-	}
 	wf.Aliases = append(wf.Aliases, id.String())
 
 	dat, _ := json.Marshal(wf)
