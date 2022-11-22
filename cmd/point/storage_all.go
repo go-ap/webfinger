@@ -11,7 +11,7 @@ import (
 	//badger "github.com/go-ap/storage-badger"
 	//boltdb "github.com/go-ap/storage-boltdb"
 	fs "github.com/go-ap/storage-fs"
-	//sqlite "github.com/go-ap/storage-sqlite"
+	sqlite "github.com/go-ap/storage-sqlite"
 )
 
 /*
@@ -40,17 +40,16 @@ func getBoltStorage(c Config, l lw.Logger) (processing.Store, error) {
 		ErrFn:   ErrLogFn(l),
 	})
 }
+*/
 
 func getSqliteStorage(c Config, l lw.Logger) (processing.Store, error) {
-	l.Debugf("Using sqlite storage at %s", path)
+	l.Debugf("Using sqlite storage at %s", c.Path)
 	return sqlite.New(sqlite.Config{
-		Path: c.Path,
-		URL:     c.URL,
+		Path:        c.Path,
+		URL:         c.BaseURL,
 		CacheEnable: true,
 	})
 }
-
-*/
 
 func getFsStorage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using fs storage at %s", c.Path)
@@ -67,8 +66,8 @@ func Storage(c Config, l lw.Logger) (processing.Store, error) {
 	//	return getBoltStorage(c, l)
 	//case StorageBadger:
 	//	return getBadgerStorage(c, l)
-	//case StorageSqlite:
-	//	return getSqliteStorage(c, l)
+	case StorageSqlite:
+		return getSqliteStorage(c, l)
 	case StorageFS:
 		return getFsStorage(c, l)
 	}
