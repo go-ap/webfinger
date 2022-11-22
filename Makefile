@@ -11,11 +11,14 @@ TEST_FLAGS ?= -count=1
 
 GO ?= go
 ENV ?= dev
-STORAGE ?= all
+STORAGE ?=
 APPSOURCES := $(wildcard ./*.go)
 PROJECT_NAME := point
 
-TAGS := $(ENV) storage_$(STORAGE)
+TAGS := $(ENV)
+ifneq ($(STORAGE), )
+	TAGS +=  storage_$(STORAGE)
+endif
 
 export CGO_ENABLED=0
 
@@ -46,15 +49,14 @@ download:
 	$(GO) mod tidy
 
 point: bin/point
-bin/fedbox: go.mod cmd/point/main.go $(APPSOURCES)
-	$(BUILD) -tags "$(TAGS)" -o $@ ./cmd/point/main.go
+bin/point: go.mod cmd/point/main.go $(APPSOURCES)
+	$(BUILD) -tags "$(TAGS)" -o $@ ./cmd/point
 
 run: point
 	@./bin/point
 
 clean:
 	-$(RM) bin/*
-	$(MAKE) -C tests $@
 
 test: TEST_TARGET := .
 test: download
@@ -63,6 +65,3 @@ test: download
 coverage: TEST_TARGET := .
 coverage: TEST_FLAGS += -covermode=count -coverprofile $(PROJECT_NAME).coverprofile
 coverage: test
-
-integration: download
-	$(MAKE) -C tests $@
