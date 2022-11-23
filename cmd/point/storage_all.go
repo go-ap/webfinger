@@ -4,43 +4,48 @@ package main
 
 import (
 	"path/filepath"
+	"strings"
 
 	"git.sr.ht/~mariusor/lw"
 	"github.com/go-ap/errors"
 	"github.com/go-ap/processing"
-	//badger "github.com/go-ap/storage-badger"
-	//boltdb "github.com/go-ap/storage-boltdb"
+	badger "github.com/go-ap/storage-badger"
+	boltdb "github.com/go-ap/storage-boltdb"
 	fs "github.com/go-ap/storage-fs"
 	sqlite "github.com/go-ap/storage-sqlite"
 )
 
-/*
 func getBadgerStorage(c Config, l lw.Logger) (processing.Store, error) {
-	conf := badger.Config{
-		Path:    c.Path,
-		URL: c.URL,
-		Logger:  l,
-	}
-	if l != nil {
-		l.Debugf("Using badger storage at %s", c.Path)
-	}
-	db, err := badger.New(conf)
-	if err != nil {
-		return db, err
+	l.Debugf("Using badger storage from %s", c.Path)
+	return badger.New(badger.Config{
+		Path:        c.Path,
+		CacheEnable: false,
+		Logger:      l,
+	})
+}
+
+func boltLogFn(logFn func(string, ...any)) func(lw.Ctx, string, ...interface{}) {
+	return func(ctx lw.Ctx, s string, i ...interface{}) {
+		ss := strings.Builder{}
+		ss.WriteString(s)
+		ss.WriteRune(' ')
+		for k, v := range ctx {
+			ss.WriteString("%s=%+v")
+			i = append(i, k, v)
+			ss.WriteRune(' ')
+		}
+		logFn(ss.String(), i...)
 	}
 }
 
 func getBoltStorage(c Config, l lw.Logger) (processing.Store, error) {
-	path := c.BaseStoragePath()
-	l.Debugf("Using boltdb storage at %s", path)
+	l.Debugf("Using boltdb storage from %s", c.Path)
 	return boltdb.New(boltdb.Config{
-		Path:    path,
-		URL: c.URL,
-		LogFn:   InfoLogFn(l),
-		ErrFn:   ErrLogFn(l),
+		Path:  c.Path,
+		LogFn: boltLogFn(l.Infof),
+		ErrFn: boltLogFn(l.Errorf),
 	})
 }
-*/
 
 func getSqliteStorage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using sqlite storage at %s", c.Path)
@@ -60,10 +65,10 @@ func getFsStorage(c Config, l lw.Logger) (processing.Store, error) {
 
 func Storage(c Config, l lw.Logger) (processing.Store, error) {
 	switch c.Storage {
-	//case StorageBoltDB:
-	//	return getBoltStorage(c, l)
-	//case StorageBadger:
-	//	return getBadgerStorage(c, l)
+	case StorageBoltDB:
+		return getBoltStorage(c, l)
+	case StorageBadger:
+		return getBadgerStorage(c, l)
 	case StorageSqlite:
 		return getSqliteStorage(c, l)
 	case StorageFS:
