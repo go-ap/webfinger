@@ -46,7 +46,6 @@ func getSqliteStorage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using sqlite storage at %s", c.Path)
 	return sqlite.New(sqlite.Config{
 		Path:        c.Path,
-		URL:         c.BaseURL,
 		CacheEnable: true,
 	})
 }
@@ -55,7 +54,6 @@ func getFsStorage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using fs storage at %s", c.Path)
 	return fs.New(fs.Config{
 		Path:        filepath.Dir(c.Path),
-		URL:         c.BaseURL,
 		CacheEnable: true,
 	})
 }

@@ -13,12 +13,11 @@ import (
 )
 
 type handler struct {
-	s   processing.ReadStore
-	app vocab.Item
+	s []processing.ReadStore
 }
 
-func New(app vocab.Actor, db processing.ReadStore) handler {
-	return handler{s: db, app: app}
+func New(db ...processing.ReadStore) handler {
+	return handler{s: db}
 }
 
 var actors = vocab.CollectionPath("actors")
@@ -59,7 +58,7 @@ func CheckActorName(name string) func(actor vocab.Actor) bool {
 	}
 }
 
-func CheckActorURL(url string) func (actor vocab.Actor) bool {
+func CheckActorURL(url string) func(actor vocab.Actor) bool {
 	return func(a vocab.Actor) bool {
 		return iriMatchesItem(vocab.IRI(url), a.URL)
 	}
@@ -87,9 +86,40 @@ func LoadActor(db processing.ReadStore, inCollection vocab.IRI, checkFns ...func
 	return found, err
 }
 
+func (h handler) findMatchingStorage(host string) (vocab.Actor, processing.ReadStore, error) {
+	var app vocab.Actor
+	for _, db := range h.s {
+		res, err := db.Load(vocab.IRI(host))
+		if err != nil {
+			continue
+		}
+		err = vocab.OnActor(res, func(actor *vocab.Actor) error {
+			app = *actor
+			return nil
+		})
+		if err != nil {
+			continue
+		}
+		if app.ID != "" {
+			return app, db, nil
+		}
+	}
+	return app, nil, fmt.Errorf("unable to find storage")
+}
+
 // HandleWebFinger serves /.well-known/webfinger/
 func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	res := r.URL.Query().Get("resource")
+	if res == "" {
+		errors.HandleError(errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
+		return
+	}
+
+	app, db, err := h.findMatchingStorage("https://" + r.Host + "/")
+	if err != nil {
+		errors.HandleError(errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
+		return
+	}
 
 	var host string
 
@@ -121,8 +151,8 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	wf := node{}
 	subject := fmt.Sprintf("%s@%s", handle, host)
 
-	actorsIRI := actors.IRI(h.app.GetLink())
-	a, err := LoadActor(h.s, actorsIRI, CheckActorName(handle), CheckActorURL(handle))
+	actorsIRI := actors.IRI(app.GetLink())
+	a, err := LoadActor(db, actorsIRI, CheckActorName(handle), CheckActorURL(handle))
 	if err != nil {
 		errors.HandleError(errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 		return

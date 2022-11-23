@@ -9,11 +9,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-ap/processing"
+	"github.com/go-ap/webfinger"
 	"git.sr.ht/~mariusor/lw"
 	w "git.sr.ht/~mariusor/wrapper"
+	"github.com/alecthomas/kong"
 	vocab "github.com/go-ap/activitypub"
-	"github.com/go-ap/webfinger"
-	"github.com/writeas/go-nodeinfo"
 )
 
 var listenOn string = "localhost:3666"
@@ -21,6 +22,13 @@ var baseURL string
 var certPath string
 var keyPath string
 var storagePath string
+
+var Point struct {
+	ListenOn string   `required:"" name:"listen" help:"The socket to listen on."`
+	KeyPath  string   `name:"key-path" help:"SSL key path for HTTPS." type:"path"`
+	CertPath string   `name:"cert-path" help:"SSL cert path for HTTPS." type:"path"`
+	Storage  []string `required:"" flag:"" name:"storage" help:"Storage DSN strings of form type:/path/to/storage."`
+}
 
 const (
 	StorageBoltDB = "boltdb"
@@ -34,7 +42,6 @@ var l = lw.Dev(lw.SetLevel(lw.DebugLevel), lw.SetOutput(os.Stderr))
 type Config struct {
 	Storage string
 	Path    string
-	BaseURL string
 }
 
 func exit(errs ...error) {
@@ -48,64 +55,49 @@ func exit(errs ...error) {
 	os.Exit(-1)
 }
 
-func main() {
-	if len(os.Args) < 3 {
-		exit(fmt.Errorf("need to pass instance URL and storage path to the application"))
-		return
-	}
-	baseURL = os.Args[1]
-	storagePath = os.Args[2]
-	conf := Config{
-		Storage: StorageFS,
-		BaseURL: baseURL,
-		Path:    storagePath,
-	}
-	db, err := Storage(conf, l)
+func OnLoadResult(it vocab.Item, err error, fn vocab.WithItemCollectionFn) error {
 	if err != nil {
-		exit(fmt.Errorf("unable to initialize storage backend: %w", err))
-		return
+		return err
 	}
+	return vocab.OnItemCollection(it, fn)
+}
 
-	res, err := db.Load(vocab.IRI(baseURL))
-	if err != nil {
-		exit(fmt.Errorf("unable to load application"))
-		return
-	}
-	var app vocab.Actor
-	err = vocab.OnActor(res, func(actor *vocab.Actor) error {
-		app = *actor
-		return nil
-	})
-	if err != nil {
-		exit(fmt.Errorf("unable to load instance Service: %w", err))
-		return
-	}
-	if app.ID == "" {
-		exit(fmt.Errorf("instance Service was not found in storage"))
-		return
+func main() {
+	ktx := kong.Parse(&Point, kong.Bind(l))
+
+	stores := make([]processing.ReadStore, 0)
+	for _, sto := range Point.Storage {
+		pieces := filepath.SplitList(sto)
+		if len(pieces) != 2 {
+			l.Errorf("Invalid storage value, expected type:/path/to/storage")
+			ktx.Exit(1)
+		}
+
+		conf := Config{Storage: pieces[0], Path: pieces[1]}
+		db, err := Storage(conf, l)
+		if err != nil {
+			exit(fmt.Errorf("unable to initialize storage backend: %w", err))
+			return
+		}
+		stores = append(stores, db)
 	}
 
 	m := http.NewServeMux()
-	cfg := webfinger.NodeInfoConfig(app, webfinger.WebInfo{})
-	ni := nodeinfo.NewService(cfg, webfinger.NodeInfoResolverNew(db, app))
-
-	h := webfinger.New(app, db)
+	h := webfinger.New(stores...)
 	m.HandleFunc("/.well-known/webfinger", h.HandleWebFinger)
 	m.HandleFunc("/.well-known/host-meta", h.HandleHostMeta)
-	m.HandleFunc("/.well-known/nodeinfo", ni.NodeInfoDiscover)
-	m.HandleFunc("/nodeinfo", ni.NodeInfo)
 
 	setters := []w.SetFn{w.Handler(m)}
-	dir, _ := filepath.Split(listenOn)
-	if listenOn == "systemd" {
+	dir, _ := filepath.Split(Point.ListenOn)
+	if Point.ListenOn == "systemd" {
 		setters = append(setters, w.Systemd())
 	} else if _, err := os.Stat(dir); err == nil {
-		setters = append(setters, w.Socket(listenOn))
-		defer func() { os.RemoveAll(listenOn) }()
-	} else if len(certPath)+len(keyPath) > 0 {
-		setters = append(setters, w.HTTPS(listenOn, certPath, keyPath))
+		setters = append(setters, w.Socket(Point.ListenOn))
+		defer func() { os.RemoveAll(Point.ListenOn) }()
+	} else if len(Point.CertPath)+len(Point.KeyPath) > 0 {
+		setters = append(setters, w.HTTPS(Point.ListenOn, Point.CertPath, Point.KeyPath))
 	} else {
-		setters = append(setters, w.HTTP(listenOn))
+		setters = append(setters, w.HTTP(Point.ListenOn))
 	}
 
 	ctx, cancelFn := context.WithTimeout(context.TODO(), time.Second*10)
@@ -113,7 +105,7 @@ func main() {
 
 	// Get start/stop functions for the http server
 	srvRun, srvStop := w.HttpServer(setters...)
-	l.Infof("Started %s %s", baseURL, listenOn)
+	l.Infof("Listening for webfinger requests on %s", listenOn)
 	stopFn := func() {
 		if err := srvStop(ctx); err != nil {
 			l.Errorf("%s", err)
@@ -153,5 +145,5 @@ func main() {
 		l.Infof("Shutting down")
 	}
 
-	os.Exit(exit)
+	ktx.Exit(exit)
 }

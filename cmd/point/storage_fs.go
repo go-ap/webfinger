@@ -12,7 +12,6 @@ func Storage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using fs storage from %s", c.Path)
 	return fs.New(fs.Config{
 		Path:        c.Path,
-		URL:         c.BaseURL,
 		CacheEnable: false,
 	})
 }
