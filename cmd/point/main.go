@@ -9,12 +9,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-ap/processing"
-	"github.com/go-ap/webfinger"
 	"git.sr.ht/~mariusor/lw"
 	w "git.sr.ht/~mariusor/wrapper"
 	"github.com/alecthomas/kong"
 	vocab "github.com/go-ap/activitypub"
+	"github.com/go-ap/processing"
+	"github.com/go-ap/webfinger"
 )
 
 var listenOn string = "localhost:3666"
@@ -37,7 +37,7 @@ const (
 	StorageFS     = "fs"
 )
 
-var l = lw.Dev(lw.SetLevel(lw.DebugLevel), lw.SetOutput(os.Stderr))
+var l = lw.Dev()
 
 type Config struct {
 	Storage string
@@ -83,7 +83,7 @@ func main() {
 	}
 
 	m := http.NewServeMux()
-	h := webfinger.New(stores...)
+	h := webfinger.New(l, stores...)
 	m.HandleFunc("/.well-known/webfinger", h.HandleWebFinger)
 	m.HandleFunc("/.well-known/host-meta", h.HandleHostMeta)
 

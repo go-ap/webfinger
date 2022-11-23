@@ -3,21 +3,22 @@ package webfinger
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/url"
-	"strings"
-
+	"git.sr.ht/~mariusor/lw"
 	vocab "github.com/go-ap/activitypub"
 	"github.com/go-ap/errors"
 	"github.com/go-ap/processing"
+	"net/http"
+	"net/url"
+	"strings"
 )
 
 type handler struct {
 	s []processing.ReadStore
+	l lw.Logger
 }
 
-func New(db ...processing.ReadStore) handler {
-	return handler{s: db}
+func New(l lw.Logger, db ...processing.ReadStore) handler {
+	return handler{s: db, l: l}
 }
 
 var actors = vocab.CollectionPath("actors")
@@ -86,6 +87,16 @@ func LoadActor(db processing.ReadStore, inCollection vocab.IRI, checkFns ...func
 	return found, err
 }
 
+func handleErr(l lw.Logger) func (r *http.Request, e error) errors.ErrorHandlerFn {
+	return func(r *http.Request, e error) errors.ErrorHandlerFn {
+		defer func(r *http.Request, e error) {
+			st := errors.HttpStatus(e)
+			l.Warnf("%s %s %d %s", r.Method, r.RequestURI, st, http.StatusText(st))
+		} (r, e)
+		return errors.HandleError(e)
+	}
+}
+
 func (h handler) findMatchingStorage(host string) (vocab.Actor, processing.ReadStore, error) {
 	var app vocab.Actor
 	for _, db := range h.s {
@@ -111,13 +122,13 @@ func (h handler) findMatchingStorage(host string) (vocab.Actor, processing.ReadS
 func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	res := r.URL.Query().Get("resource")
 	if res == "" {
-		errors.HandleError(errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
+		handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
 		return
 	}
 
 	app, db, err := h.findMatchingStorage("https://" + r.Host + "/")
 	if err != nil {
-		errors.HandleError(errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
+		handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 		return
 	}
 
@@ -125,7 +136,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 
 	typ, handle := splitResourceString(res)
 	if typ == "" || handle == "" {
-		errors.HandleError(errors.BadRequestf("invalid resource %s", res)).ServeHTTP(w, r)
+		handleErr(h.l)(r, errors.BadRequestf("invalid resource %s", res)).ServeHTTP(w, r)
 		return
 	}
 	if typ == "https" {
@@ -154,11 +165,11 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	actorsIRI := actors.IRI(app.GetLink())
 	a, err := LoadActor(db, actorsIRI, CheckActorName(handle), CheckActorURL(handle))
 	if err != nil {
-		errors.HandleError(errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
+		handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 		return
 	}
 	if a == nil {
-		errors.HandleError(errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
+		handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
 		return
 	}
 
@@ -196,6 +207,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/jrd+json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(dat)
+	h.l.Debugf("%s %s %d %s", r.Method, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
 }
 
 // HandleHostMeta serves /.well-known/host-meta
@@ -216,4 +228,5 @@ func (h handler) HandleHostMeta(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/jrd+json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(dat)
+	h.l.Debugf("%s %s %d %s", r.Method, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
 }
