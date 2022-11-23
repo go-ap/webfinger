@@ -91,7 +91,7 @@ func handleErr(l lw.Logger) func (r *http.Request, e error) errors.ErrorHandlerF
 	return func(r *http.Request, e error) errors.ErrorHandlerFn {
 		defer func(r *http.Request, e error) {
 			st := errors.HttpStatus(e)
-			l.Warnf("%s %s %d %s", r.Method, r.RequestURI, st, http.StatusText(st))
+			l.Warnf("%s %s%s %d %s", r.Method, r.Host, r.RequestURI, st, http.StatusText(st))
 		} (r, e)
 		return errors.HandleError(e)
 	}
@@ -207,7 +207,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/jrd+json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(dat)
-	h.l.Debugf("%s %s %d %s", r.Method, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
+	h.l.Debugf("%s %s%s %d %s", r.Method, r.Host, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
 }
 
 // HandleHostMeta serves /.well-known/host-meta
@@ -228,5 +228,5 @@ func (h handler) HandleHostMeta(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/jrd+json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(dat)
-	h.l.Debugf("%s %s %d %s", r.Method, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
+	h.l.Debugf("%s %s%s %d %s", r.Method, r.Host, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
 }
