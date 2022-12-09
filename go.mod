@@ -6,13 +6,13 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20221202111053-2dd31f3348e7
 	git.sr.ht/~mariusor/wrapper v0.0.0-20211204195804-3033a1099e0f
 	github.com/alecthomas/kong v0.7.1
-	github.com/go-ap/activitypub v0.0.0-20221207073405-5d6d22cbc42e
+	github.com/go-ap/activitypub v0.0.0-20221209114049-1ceafda50f9f
 	github.com/go-ap/errors v0.0.0-20221205040414-01c1adfc98ea
-	github.com/go-ap/processing v0.0.0-20221208074025-1afcb8aee29b
-	github.com/go-ap/storage-badger v0.0.0-20221207090729-d284526bf663
-	github.com/go-ap/storage-boltdb v0.0.0-20221207090508-821a417c932e
-	github.com/go-ap/storage-fs v0.0.0-20221207123736-86ce29ee5439
-	github.com/go-ap/storage-sqlite v0.0.0-20221208034930-17437ff26589
+	github.com/go-ap/processing v0.0.0-20221209114920-2605ed43f9c7
+	github.com/go-ap/storage-badger v0.0.0-20221209115412-eb92be4abf9e
+	github.com/go-ap/storage-boltdb v0.0.0-20221209115213-4636e8c8388f
+	github.com/go-ap/storage-fs v0.0.0-20221209115039-7cbe616d9090
+	github.com/go-ap/storage-sqlite v0.0.0-20221209115114-91204adeca08
 )
 
 require (
@@ -22,7 +22,7 @@ require (
 	github.com/dgraph-io/badger/v3 v3.2103.4 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
-	github.com/go-ap/client v0.0.0-20221208073834-049d7599ebe3 // indirect
+	github.com/go-ap/client v0.0.0-20221209114704-ee9adde8b2c2 // indirect
 	github.com/go-ap/fedbox v0.0.0-20221205131040-b314810969f0 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
