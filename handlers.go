@@ -3,13 +3,14 @@ package webfinger
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
+	"strings"
+
 	"git.sr.ht/~mariusor/lw"
 	vocab "github.com/go-ap/activitypub"
 	"github.com/go-ap/errors"
 	"github.com/go-ap/processing"
-	"net/http"
-	"net/url"
-	"strings"
 )
 
 type handler struct {
@@ -171,7 +172,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	}
 
 	wf := node{}
-	subject := fmt.Sprintf("%s@%s", handle, host)
+	subject := res
 
 	a, err := LoadActor(db, app, CheckActorName(handle), CheckActorURL(handle), CheckActorID(handle))
 	if err != nil {
