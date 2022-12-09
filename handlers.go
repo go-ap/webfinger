@@ -65,15 +65,23 @@ func CheckActorURL(url string) func(actor vocab.Actor) bool {
 	}
 }
 
-func LoadActor(db processing.ReadStore, inCollection vocab.IRI, checkFns ...func(actor vocab.Actor) bool) (*vocab.Actor, error) {
+func CheckActorID(url string) func(actor vocab.Actor) bool {
+	return func(a vocab.Actor) bool {
+		return iriMatchesItem(vocab.IRI(url), a.ID)
+	}
+}
+
+func LoadActor(db processing.ReadStore, app vocab.Actor, checkFns ...func(actor vocab.Actor) bool) (*vocab.Actor, error) {
+	inCollection := actors.IRI(app.GetLink())
 	actors, err := db.Load(inCollection)
 	if err != nil {
 		return nil, errors.NewNotFound(err, "no actors found in collection: %s", inCollection)
 	}
 	var found *vocab.Actor
 	err = vocab.OnCollectionIntf(actors, func(col vocab.CollectionInterface) error {
+		col.Append(app)
 		for _, actor := range col.Collection() {
-			vocab.OnActor(actor, func(a *vocab.Actor) error {
+			err = vocab.OnActor(actor, func(a *vocab.Actor) error {
 				for _, fn := range checkFns {
 					if fn(*a) {
 						found = a
@@ -82,37 +90,43 @@ func LoadActor(db processing.ReadStore, inCollection vocab.IRI, checkFns ...func
 				return nil
 			})
 		}
-		return nil
+		return err
 	})
+	if err != nil {
+		return nil, err
+	}
 	return found, err
 }
 
-func handleErr(l lw.Logger) func (r *http.Request, e error) errors.ErrorHandlerFn {
+func handleErr(l lw.Logger) func(r *http.Request, e error) errors.ErrorHandlerFn {
 	return func(r *http.Request, e error) errors.ErrorHandlerFn {
 		defer func(r *http.Request, e error) {
 			st := errors.HttpStatus(e)
 			l.Warnf("%s %s%s %d %s", r.Method, r.Host, r.RequestURI, st, http.StatusText(st))
-		} (r, e)
+		}(r, e)
 		return errors.HandleError(e)
 	}
 }
 
-func (h handler) findMatchingStorage(host string) (vocab.Actor, processing.ReadStore, error) {
+func (h handler) findMatchingStorage(hosts ...string) (vocab.Actor, processing.ReadStore, error) {
 	var app vocab.Actor
 	for _, db := range h.s {
-		res, err := db.Load(vocab.IRI(host))
-		if err != nil {
-			continue
-		}
-		err = vocab.OnActor(res, func(actor *vocab.Actor) error {
-			app = *actor
-			return nil
-		})
-		if err != nil {
-			continue
-		}
-		if app.ID != "" {
-			return app, db, nil
+		for _, host := range hosts {
+			host = "https://" + host + "/"
+			res, err := db.Load(vocab.IRI(host))
+			if err != nil {
+				continue
+			}
+			err = vocab.OnActor(res, func(actor *vocab.Actor) error {
+				app = *actor
+				return nil
+			})
+			if err != nil {
+				continue
+			}
+			if app.ID != "" {
+				return app, db, nil
+			}
 		}
 	}
 	return app, nil, fmt.Errorf("unable to find storage")
@@ -126,14 +140,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app, db, err := h.findMatchingStorage("https://" + r.Host + "/")
-	if err != nil {
-		handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
-		return
-	}
-
-	var host string
-
+	host := r.Host
 	typ, handle := splitResourceString(res)
 	if typ == "" || handle == "" {
 		handleErr(h.l)(r, errors.BadRequestf("invalid resource %s", res)).ServeHTTP(w, r)
@@ -154,16 +161,19 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 				}
 				return ar[0], ar[1]
 			}(handle)
-		} else {
-			host = r.Host
 		}
+	}
+
+	app, db, err := h.findMatchingStorage(host)
+	if err != nil {
+		handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
+		return
 	}
 
 	wf := node{}
 	subject := fmt.Sprintf("%s@%s", handle, host)
 
-	actorsIRI := actors.IRI(app.GetLink())
-	a, err := LoadActor(db, actorsIRI, CheckActorName(handle), CheckActorURL(handle))
+	a, err := LoadActor(db, app, CheckActorName(handle), CheckActorURL(handle), CheckActorID(handle))
 	if err != nil {
 		handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 		return
