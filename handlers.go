@@ -194,15 +194,23 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	if !vocab.IsNil(a.URL) {
-		urls := make(vocab.ItemCollection, 0)
+		urls := make(vocab.IRIs, 0)
 		if vocab.IsItemCollection(a.URL) {
-			urls = append(urls, a.URL.(vocab.ItemCollection)...)
+			vocab.OnItemCollection(a.URL, func(col *vocab.ItemCollection) error {
+				for _, it := range col.Collection() {
+					urls.Append(it.GetLink())
+				}
+				return nil
+			})
 		} else {
-			urls = append(urls, a.URL.(vocab.IRI))
+			urls.Append(a.URL.GetLink())
 		}
 
 		for _, u := range urls {
-			url := u.GetLink().String()
+			if u.Equals(id, true) {
+				continue
+			}
+			url := u.String()
 			wf.Aliases = append(wf.Aliases, url)
 			wf.Links = append(wf.Links, link{
 				Rel:  "https://webfinger.net/rel/profile-page",
