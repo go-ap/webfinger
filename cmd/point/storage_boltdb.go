@@ -10,5 +10,9 @@ import (
 
 func Storage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using boltdb storage from %s", c.Path)
-	return boltdb.New(boltdb.Config{Path: c.Path})
+	return boltdb.New(boltdb.Config{
+		Path:  c.Path,
+		LogFn: l.Infof,
+		ErrFn: l.Errorf,
+	})
 }

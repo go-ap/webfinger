@@ -20,7 +20,8 @@ func getBadgerStorage(c Config, l lw.Logger) (processing.Store, error) {
 	return badger.New(badger.Config{
 		Path:        c.Path,
 		CacheEnable: false,
-		Logger:      l,
+		LogFn:       l.Debugf,
+		ErrFn:       l.Warnf,
 	})
 }
 
@@ -42,8 +43,8 @@ func getBoltStorage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using boltdb storage from %s", c.Path)
 	return boltdb.New(boltdb.Config{
 		Path:  c.Path,
-		LogFn: boltLogFn(l.Infof),
-		ErrFn: boltLogFn(l.Errorf),
+		LogFn: l.Infof,
+		ErrFn: l.Errorf,
 	})
 }
 
