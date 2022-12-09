@@ -13,5 +13,7 @@ func Storage(c Config, l lw.Logger) (processing.Store, error) {
 	return fs.New(fs.Config{
 		Path:        c.Path,
 		CacheEnable: false,
+		LogFn:       l.Infof,
+		ErrFn:       l.Errorf,
 	})
 }

@@ -4,7 +4,6 @@ package main
 
 import (
 	"path/filepath"
-	"strings"
 
 	"git.sr.ht/~mariusor/lw"
 	"github.com/go-ap/errors"
@@ -25,20 +24,6 @@ func getBadgerStorage(c Config, l lw.Logger) (processing.Store, error) {
 	})
 }
 
-func boltLogFn(logFn func(string, ...any)) func(lw.Ctx, string, ...interface{}) {
-	return func(ctx lw.Ctx, s string, i ...interface{}) {
-		ss := strings.Builder{}
-		ss.WriteString(s)
-		ss.WriteRune(' ')
-		for k, v := range ctx {
-			ss.WriteString("%s=%+v")
-			i = append(i, k, v)
-			ss.WriteRune(' ')
-		}
-		logFn(ss.String(), i...)
-	}
-}
-
 func getBoltStorage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using boltdb storage from %s", c.Path)
 	return boltdb.New(boltdb.Config{
@@ -53,6 +38,8 @@ func getSqliteStorage(c Config, l lw.Logger) (processing.Store, error) {
 	return sqlite.New(sqlite.Config{
 		Path:        c.Path,
 		CacheEnable: true,
+		LogFn:       l.Infof,
+		ErrFn:       l.Errorf,
 	})
 }
 
@@ -61,6 +48,8 @@ func getFsStorage(c Config, l lw.Logger) (processing.Store, error) {
 	return fs.New(fs.Config{
 		Path:        filepath.Dir(c.Path),
 		CacheEnable: true,
+		LogFn:       l.Infof,
+		ErrFn:       l.Errorf,
 	})
 }
 
