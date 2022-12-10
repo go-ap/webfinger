@@ -46,10 +46,11 @@ TEST := $(GO) test $(BUILDFLAGS)
 all: point
 
 download:
+	$(GO) mod download all
 	$(GO) mod tidy
 
 point: bin/point
-bin/point: go.mod cmd/point/main.go $(APPSOURCES)
+bin/point: go.mod cmd/point/main.go $(APPSOURCES) download
 	$(BUILD) -tags "$(TAGS)" -o $@ ./cmd/point
 
 run: point
