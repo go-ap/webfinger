@@ -8,22 +8,22 @@ require (
 	github.com/alecthomas/kong v0.7.1
 	github.com/go-ap/activitypub v0.0.0-20221209114049-1ceafda50f9f
 	github.com/go-ap/errors v0.0.0-20221205040414-01c1adfc98ea
-	github.com/go-ap/processing v0.0.0-20221209114920-2605ed43f9c7
-	github.com/go-ap/storage-badger v0.0.0-20221209115412-eb92be4abf9e
-	github.com/go-ap/storage-boltdb v0.0.0-20221209115213-4636e8c8388f
-	github.com/go-ap/storage-fs v0.0.0-20221209115039-7cbe616d9090
-	github.com/go-ap/storage-sqlite v0.0.0-20221209115114-91204adeca08
+	github.com/go-ap/processing v0.0.0-20221214021151-7c87dc488d27
+	github.com/go-ap/storage-badger v0.0.0-20221219095120-572631376b20
+	github.com/go-ap/storage-boltdb v0.0.0-20221219095220-ae1d40758732
+	github.com/go-ap/storage-fs v0.0.0-20221213012421-daf05f2d8065
+	github.com/go-ap/storage-sqlite v0.0.0-20221219094952-4a241232e483
 )
 
 require (
 	git.sr.ht/~mariusor/go-xsd-duration v0.0.0-20220703122237-02e73435a078 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/dgraph-io/badger/v3 v3.2103.4 // indirect
+	github.com/dgraph-io/badger/v3 v3.2103.5 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
-	github.com/go-ap/client v0.0.0-20221209114704-ee9adde8b2c2 // indirect
-	github.com/go-ap/fedbox v0.0.0-20221205131040-b314810969f0 // indirect
+	github.com/go-ap/client v0.0.0-20221211133508-e3087682099e // indirect
+	github.com/go-ap/fedbox v0.0.0-20221213130423-b82c28c17bd5 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/google/flatbuffers v22.11.23+incompatible // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/klauspost/compress v1.15.12 // indirect
+	github.com/klauspost/compress v1.15.13 // indirect
 	github.com/mariusor/qstring v0.0.0-20200204164351-5a99d46de39d // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
@@ -59,7 +59,7 @@ require (
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/cc/v3 v3.40.0 // indirect
 	modernc.org/ccgo/v3 v3.16.13 // indirect
-	modernc.org/libc v1.21.5 // indirect
+	modernc.org/libc v1.22.2 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/opt v0.1.3 // indirect
