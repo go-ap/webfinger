@@ -8,7 +8,6 @@ MAKEFLAGS += --no-builtin-rules
 ENV ?= prod
 APP_HOSTNAME ?= point.local
 PORT ?= 4001
-VERSION ?= (HEAD)
 
 BUILD_CMD=buildah bud
 RUN_CMD=podman run
@@ -17,9 +16,6 @@ PUSH_CMD=podman push
 COMPOSE_CMD=podman-compose
 
 .PHONY: clean images cert build builder push
-
-$(ENV_FILE):
-	touch $(ENV_FILE)
 
 point.pem:
 	./gen-certs.sh point
