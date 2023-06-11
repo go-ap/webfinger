@@ -88,16 +88,18 @@ func main() {
 	m.HandleFunc("/.well-known/host-meta", h.HandleHostMeta)
 
 	setters := []w.SetFn{w.Handler(m)}
+
+	if len(Point.CertPath)+len(Point.KeyPath) > 0 {
+		setters = append(setters, w.WithTLSCert(Point.CertPath, Point.KeyPath))
+	}
 	dir, _ := filepath.Split(Point.ListenOn)
 	if Point.ListenOn == "systemd" {
-		setters = append(setters, w.Systemd())
+		setters = append(setters, w.OnSystemd())
 	} else if _, err := os.Stat(dir); err == nil {
-		setters = append(setters, w.Socket(Point.ListenOn))
+		setters = append(setters, w.OnSocket(Point.ListenOn))
 		defer func() { os.RemoveAll(Point.ListenOn) }()
-	} else if len(Point.CertPath)+len(Point.KeyPath) > 0 {
-		setters = append(setters, w.HTTPS(Point.ListenOn, Point.CertPath, Point.KeyPath))
 	} else {
-		setters = append(setters, w.HTTP(Point.ListenOn))
+		setters = append(setters, w.OnTCP(Point.ListenOn))
 	}
 
 	ctx, cancelFn := context.WithTimeout(context.TODO(), time.Second*10)
