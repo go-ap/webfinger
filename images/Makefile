@@ -8,6 +8,7 @@ MAKEFLAGS += --no-builtin-rules
 ENV ?= prod
 APP_HOSTNAME ?= point.local
 PORT ?= 4001
+TAG ?= $(ENV)
 
 BUILD_CMD=buildah bud
 RUN_CMD=podman run
@@ -29,16 +30,16 @@ builder:
 	./build.sh .. point/builder
 
 build:
-	ENV=$(ENV) VERSION=$(VERSION) PORT=$(PORT) APP_HOSTNAME=$(APP_HOSTNAME) ./image.sh point/app:$(ENV)
+	ENV=$(ENV) VERSION=$(VERSION) STORAGE=$(STORAGE) PORT=$(PORT) APP_HOSTNAME=$(APP_HOSTNAME) ./image.sh $(APP_HOSTNAME)/app:$(TAG)
 
 push: build
-	$(TAG_CMD) point/app:$(ENV) quay.io/go-ap/point:$(ENV)
-	$(PUSH_CMD) quay.io/go-ap/point:$(ENV)
-ifeq ($(ENV), dev)
-	$(TAG_CMD) point/app:$(ENV) quay.io/go-ap/point:latest
+	$(TAG_CMD) $(APP_HOSTNAME)/app:$(TAG) quay.io/go-ap/point:$(TAG)
+	$(PUSH_CMD) quay.io/go-ap/point:$(TAG)
+ifeq ($(TAG),dev)
+	$(TAG_CMD) $(APP_HOSTNAME)/app:$(TAG) quay.io/go-ap/point:latest || true
 	$(PUSH_CMD) quay.io/go-ap/point:latest || true
 endif
-ifneq ($(VERSION), )
-	$(TAG_CMD) point/app:$(ENV) quay.io/go-ap/point:$(VERSION)-$(ENV) || true
-	$(PUSH_CMD) quay.io/go-ap/point:$(VERSION)-$(ENV) || true
+ifneq ($(VERSION),)
+	$(TAG_CMD) $(APP_HOSTNAME)/app:$(ENV) quay.io/go-ap/point:$(VERSION)-$(TAG) || true
+	$(PUSH_CMD) quay.io/go-ap/point:$(VERSION)-$(TAG) || true
 endif
