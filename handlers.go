@@ -108,9 +108,9 @@ func LoadActor(db processing.ReadStore, app vocab.Actor, checkFns ...func(actor 
 		return nil, errors.NewNotFound(err, "no actors found in collection: %s", inCollection)
 	}
 	var found vocab.Item
-	if vocab.IsItemCollection(actors) {
-		err = vocab.OnItemCollection(actors, func(col *vocab.ItemCollection) error {
-			for _, act := range *col {
+	if actors.IsCollection() {
+		err = vocab.OnCollectionIntf(actors, func(col vocab.CollectionInterface) error {
+			for _, act := range col.Collection() {
 				vocab.OnActor(act, func(a *vocab.Actor) error {
 					for _, fn := range checkFns {
 						if fn(*a) {

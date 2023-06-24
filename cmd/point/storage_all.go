@@ -3,8 +3,6 @@
 package main
 
 import (
-	"path/filepath"
-
 	"git.sr.ht/~mariusor/lw"
 	"github.com/go-ap/errors"
 	"github.com/go-ap/processing"
@@ -46,7 +44,7 @@ func getSqliteStorage(c Config, l lw.Logger) (processing.Store, error) {
 func getFsStorage(c Config, l lw.Logger) (processing.Store, error) {
 	l.Debugf("Using fs storage at %s", c.Path)
 	return fs.New(fs.Config{
-		Path:        filepath.Dir(c.Path),
+		Path:        c.Path,
 		CacheEnable: true,
 		LogFn:       l.Infof,
 		ErrFn:       l.Errorf,
