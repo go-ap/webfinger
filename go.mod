@@ -6,13 +6,13 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20230317075520-07e173563bf8
 	git.sr.ht/~mariusor/wrapper v0.0.0-20230104101555-9bfc303f6588
 	github.com/alecthomas/kong v0.7.1
-	github.com/go-ap/activitypub v0.0.0-20230514141345-45936cc2f768
+	github.com/go-ap/activitypub v0.0.0-20230623140027-da408bbcc578
 	github.com/go-ap/errors v0.0.0-20221205040414-01c1adfc98ea
-	github.com/go-ap/processing v0.0.0-20230611142403-7b8178f496f9
-	github.com/go-ap/storage-badger v0.0.0-20230611143429-7d1ff96e58fd
-	github.com/go-ap/storage-boltdb v0.0.0-20230611143314-6b0b1ccf11d4
-	github.com/go-ap/storage-fs v0.0.0-20230611142940-745115720b9f
-	github.com/go-ap/storage-sqlite v0.0.0-20230611143036-2cbd8c66869b
+	github.com/go-ap/processing v0.0.0-20230624183720-f155e5e6dd15
+	github.com/go-ap/storage-badger v0.0.0-20230624184045-6db937bf4ca3
+	github.com/go-ap/storage-boltdb v0.0.0-20230624184030-cfb0d088468e
+	github.com/go-ap/storage-fs v0.0.0-20230624183918-cb56561fffde
+	github.com/go-ap/storage-sqlite v0.0.0-20230624184017-62d6e28c314d
 )
 
 require (
@@ -22,8 +22,8 @@ require (
 	github.com/dgraph-io/badger/v3 v3.2103.5 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/client v0.0.0-20230514142616-d54d23930714 // indirect
-	github.com/go-ap/filters v0.0.0-20230611142751-c49e8b41faef // indirect
+	github.com/go-ap/client v0.0.0-20230623140942-8775194a9f6a // indirect
+	github.com/go-ap/filters v0.0.0-20230624183827-42dc76100860 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/klauspost/compress v1.16.5 // indirect
+	github.com/klauspost/compress v1.16.6 // indirect
 	github.com/mariusor/qstring v0.0.0-20200204164351-5a99d46de39d // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
@@ -48,12 +48,12 @@ require (
 	github.com/valyala/fastjson v1.6.4 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
-	golang.org/x/mod v0.10.0 // indirect
-	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/oauth2 v0.8.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/tools v0.9.3 // indirect
+	golang.org/x/crypto v0.10.0 // indirect
+	golang.org/x/mod v0.11.0 // indirect
+	golang.org/x/net v0.11.0 // indirect
+	golang.org/x/oauth2 v0.9.0 // indirect
+	golang.org/x/sys v0.9.0 // indirect
+	golang.org/x/tools v0.10.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	lukechampine.com/uint128 v1.3.0 // indirect
