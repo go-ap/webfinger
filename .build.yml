@@ -7,20 +7,26 @@ packages:
 sources:
   - https://github.com/go-ap/webfinger
 secrets:
-  - 32610757-76e9-4671-adf1-98163ca8b594
+  - 3dcea276-38d6-4a7e-85e5-20cbc903e1ea
   - 3f30fd61-e33d-4198-aafb-0ff341e9db1c
-  - 90ecf226-098f-4d66-befe-1fe462027432
-  - 53ebbaf9-664b-4241-9d07-f2f12feee80c
 tasks:
   - build: |
+      test ${BUILD_SUBMITTER} != "git.sr.ht" && complete-build
       set +x
       cd webfinger
       make all
   - tests: |
-      set -a
       cd webfinger
       make test
-  - image: |
+  - push_to_github: |
+      test ${BUILD_SUBMITTER} != "git.sr.ht" && complete-build
+      set -a +x
+      ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+      cd webfinger
+      git remote add hub git@github.com:go-ap/webfinger
+      git push hub --force --all
+  - images: |
       set -a +x
       source ~/.buildah.env
 
@@ -48,6 +54,7 @@ tasks:
         if [ "${_branch}" = "master" ]; then
             make -C images STORAGE="${_storage}" ENV=qa VERSION="${_version}" push
         fi
+
         _tag=$(git describe --long --tags || true)
         if [ -n "${_tag}" ]; then
           make -C images STORAGE="${_storage}" ENV=prod VERSION="${_tag}" push
@@ -55,6 +62,7 @@ tasks:
       }
       _push
       _push fs
+      # I guess I don't need everything while we're in heavy development
       #_push badger
       #_push boltdb
       #_push sqlite
