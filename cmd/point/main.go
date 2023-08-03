@@ -12,9 +12,9 @@ import (
 	"git.sr.ht/~mariusor/lw"
 	w "git.sr.ht/~mariusor/wrapper"
 	"github.com/alecthomas/kong"
-	vocab "github.com/go-ap/activitypub"
 	"github.com/go-ap/processing"
 	"github.com/go-ap/webfinger"
+	"github.com/go-ap/webfinger/internal/config"
 )
 
 var Point struct {
@@ -49,26 +49,19 @@ func exit(errs ...error) {
 	os.Exit(-1)
 }
 
-func OnLoadResult(it vocab.Item, err error, fn vocab.WithItemCollectionFn) error {
-	if err != nil {
-		return err
-	}
-	return vocab.OnItemCollection(it, fn)
-}
-
 func main() {
 	ktx := kong.Parse(&Point, kong.Bind(l))
 
 	stores := make([]processing.ReadStore, 0)
 	for _, sto := range Point.Storage {
-		pieces := filepath.SplitList(sto)
-		if len(pieces) != 2 {
-			l.Errorf("Invalid storage value, expected type:/path/to/storage")
-			ktx.Exit(1)
-		}
+		typ, path := config.ParseStorageDsn(sto)
 
-		conf := Config{Storage: pieces[0], Path: pieces[1]}
-		db, err := Storage(conf, l)
+		if !config.ValidStorageType(typ) {
+			typ = config.DefaultStorage
+			path = sto
+		}
+		conf := config.Storage{Type: typ, Path: path}
+		db, err := config.NewStorage(conf, l)
 		if err != nil {
 			exit(fmt.Errorf("unable to initialize storage backend: %w", err))
 			return

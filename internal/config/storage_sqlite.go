@@ -1,6 +1,6 @@
 //go:build storage_sqlite
 
-package main
+package config
 
 import (
 	"git.sr.ht/~mariusor/lw"
@@ -8,8 +8,10 @@ import (
 	sqlite "github.com/go-ap/storage-sqlite"
 )
 
-func Storage(c Config, l lw.Logger) (processing.Store, error) {
-	l.Debugf("Using sqlite storage at %s", c.Path)
+const DefaultStorage = StorageSqlite
+
+func Storage(c Storage, l lw.Logger) (processing.Store, error) {
+	l.Debugf("Using sqlite Storage at %s", c.Path)
 	return sqlite.New(sqlite.Config{
 		Path:        c.Path,
 		CacheEnable: true,
