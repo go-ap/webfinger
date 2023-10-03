@@ -21,7 +21,7 @@ var Point struct {
 	ListenOn string   `required:"" name:"listen" help:"The socket to listen on." default:"localhost:3666"`
 	KeyPath  string   `name:"key-path" help:"SSL key path for HTTPS." type:"path"`
 	CertPath string   `name:"cert-path" help:"SSL cert path for HTTPS." type:"path"`
-	Storage  []string `required:"" flag:"" name:"storage" help:"Storage DSN strings of form type:/path/to/storage."`
+	Storage  []string `required:"" flag:"" name:"storage" help:"Storage DSN strings of form type:///path/to/storage."`
 }
 
 const (
