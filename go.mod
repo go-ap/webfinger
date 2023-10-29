@@ -11,11 +11,11 @@ require (
 	github.com/go-ap/activitypub v0.0.0-20231029155133-33c979e46cbb
 	github.com/go-ap/errors v0.0.0-20231003111023-183eef4b31b7
 	github.com/go-ap/fedbox v0.0.0-20230730145122-ecd6576fae5b
-	github.com/go-ap/processing v0.0.0-20231029172037-ad55c91da590
-	github.com/go-ap/storage-badger v0.0.0-20231029172522-c1044970c863
-	github.com/go-ap/storage-boltdb v0.0.0-20231029172439-daf913db9e99
-	github.com/go-ap/storage-fs v0.0.0-20231029172118-5a708236b337
-	github.com/go-ap/storage-sqlite v0.0.0-20231029172208-10772376b49c
+	github.com/go-ap/processing v0.0.0-20231029183046-eb555cb1037c
+	github.com/go-ap/storage-badger v0.0.0-20231029183557-937b91454561
+	github.com/go-ap/storage-boltdb v0.0.0-20231029183533-49b95c07e8d4
+	github.com/go-ap/storage-fs v0.0.0-20231029183332-d84647b22b1c
+	github.com/go-ap/storage-sqlite v0.0.0-20231029183515-e27af49323c8
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -27,7 +27,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ap/cache v0.0.0-20231029155239-8c539c46e4b6 // indirect
 	github.com/go-ap/client v0.0.0-20231029155419-dda847baeedb // indirect
-	github.com/go-ap/filters v0.0.0-20231029171902-c68bd9d0aff0 // indirect
+	github.com/go-ap/filters v0.0.0-20231029182927-7b27bf6bd79a // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
