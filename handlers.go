@@ -41,7 +41,7 @@ func iriMatchesItem(iri vocab.IRI, it vocab.Item) bool {
 
 	match := false
 	if vocab.IsItemCollection(it) {
-		vocab.OnCollectionIntf(it, func(col vocab.CollectionInterface) error {
+		_ = vocab.OnCollectionIntf(it, func(col vocab.CollectionInterface) error {
 			for _, i := range col.Collection() {
 				if iri.Equals(i.GetLink(), true) {
 					match = true
@@ -177,7 +177,8 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	host := r.Host
+	hosts := make([]string, 0)
+	hosts = append(hosts, r.Host)
 	typ, handle := splitResourceString(res)
 	if typ == "" || handle == "" {
 		handleErr(h.l)(r, errors.BadRequestf("invalid resource %s", res)).ServeHTTP(w, r)
@@ -185,20 +186,28 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	}
 	if typ == "acct" {
 		if strings.Contains(handle, "@") {
-			handle, host = func(s string) (string, string) {
-				split := "@"
-				ar := strings.Split(s, split)
-				if len(ar) != 2 {
-					return "", ""
+			nh, hh := func(s string) (string, string) {
+				if ar := strings.Split(s, "@"); len(ar) == 2 {
+					return ar[0], ar[1]
 				}
-				return ar[0], ar[1]
+				return s, ""
 			}(handle)
+			hosts = append(hosts, hh)
+			handle = nh
 		}
 	}
 
-	app, db, err := h.findMatchingStorage(host)
-	if err != nil {
-		handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
+	var app vocab.Actor
+	var db processing.ReadStore
+	var err error
+	for _, host := range hosts {
+		if app, db, err = h.findMatchingStorage(host); err == nil {
+			break
+		}
+		h.l.Debugf("unable to load storage for %s: %s", host, err)
+	}
+	if db == nil {
+		handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
 		return
 	}
 
