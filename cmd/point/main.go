@@ -97,7 +97,7 @@ func main() {
 	l.Infof("Listening for webfinger requests on %s", Point.ListenOn)
 	stopFn := func() {
 		if err := srvStop(ctx); err != nil {
-			l.Errorf("%s", err)
+			l.Errorf("%+v", err)
 		}
 	}
 
@@ -119,13 +119,15 @@ func main() {
 		},
 	}).Exec(func() error {
 		if err := srvRun(); err != nil {
-			l.Errorf("%s", err)
+			l.Errorf("%+v", err)
 			return err
 		}
 		var err error
 		// Doesn't block if no connections, but will otherwise wait until the timeout deadline.
 		go func(e error) {
-			l.Errorf("%s", err)
+			if err != nil {
+				l.Errorf("%+v", err)
+			}
 			stopFn()
 		}(err)
 		return err
