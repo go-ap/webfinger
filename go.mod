@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20230317075520-07e173563bf8
-	git.sr.ht/~mariusor/wrapper v0.0.0-20230710102058-fc38877da4fe
+	git.sr.ht/~mariusor/wrapper v0.0.0-20240210113306-c862d947a747
 	github.com/alecthomas/kong v0.8.0
 	github.com/go-ap/activitypub v0.0.0-20240211124657-820024a66b78
 	github.com/go-ap/errors v0.0.0-20231003111023-183eef4b31b7

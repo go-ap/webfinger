@@ -100,6 +100,7 @@ func main() {
 			l.Errorf("%+v", err)
 		}
 	}
+	defer stopFn()
 
 	exit := w.RegisterSignalHandlers(w.SignalHandlers{
 		syscall.SIGHUP: func(_ chan int) {
@@ -122,15 +123,7 @@ func main() {
 			l.Errorf("%+v", err)
 			return err
 		}
-		var err error
-		// Doesn't block if no connections, but will otherwise wait until the timeout deadline.
-		go func(e error) {
-			if err != nil {
-				l.Errorf("%+v", err)
-			}
-			stopFn()
-		}(err)
-		return err
+		return nil
 	})
 	if exit == 0 {
 		l.Infof("Shutting down")
