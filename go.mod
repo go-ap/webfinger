@@ -9,11 +9,11 @@ require (
 	github.com/go-ap/activitypub v0.0.0-20240211124657-820024a66b78
 	github.com/go-ap/errors v0.0.0-20231003111023-183eef4b31b7
 	github.com/go-ap/fedbox v0.0.0-20230730145122-ecd6576fae5b
-	github.com/go-ap/processing v0.0.0-20240211125256-7af62c2fbb07
-	github.com/go-ap/storage-badger v0.0.0-20240211125442-ee9f27b742d1
-	github.com/go-ap/storage-boltdb v0.0.0-20240211125425-9a799fc1b5d6
-	github.com/go-ap/storage-fs v0.0.0-20240211125336-36ecf4f16ab0
-	github.com/go-ap/storage-sqlite v0.0.0-20240211125357-0f86ee5852a9
+	github.com/go-ap/processing v0.0.0-20240213082751-856796c34181
+	github.com/go-ap/storage-badger v0.0.0-20240213083012-a833ff27ccb6
+	github.com/go-ap/storage-boltdb v0.0.0-20240213083028-23a12483788f
+	github.com/go-ap/storage-fs v0.0.0-20240213082822-39deada454d7
+	github.com/go-ap/storage-sqlite v0.0.0-20240213082950-e99e178657cf
 	github.com/joho/godotenv v1.5.1
 )
 
