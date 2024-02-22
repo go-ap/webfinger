@@ -29,6 +29,10 @@ func ValidEnv(s string) bool {
 	return s == string(PROD) || s == string(DEV) || s == string(TEST)
 }
 
+func (e Env) IsProd() bool {
+	return strings.Contains(string(e), string(PROD))
+}
+
 type BackendConfig struct {
 	Enabled bool
 	Host    string
