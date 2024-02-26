@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -57,22 +56,23 @@ type Options struct {
 	KeyPath   string
 	Host      string
 	Listen    string
-	Storage   []Storage
+	Storage   Storage
 }
 
 type StorageType string
 
 const (
-	KeyENV       = "ENV"
-	KeyTimeOut   = "TIME_OUT"
-	KeyLogLevel  = "LOG_LEVEL"
-	KeyLogOutput = "LOG_OUTPUT"
-	KeyHostname  = "HOSTNAME"
-	KeyHTTPS     = "HTTPS"
-	KeyCertPath  = "CERT_PATH"
-	KeyKeyPath   = "KEY_PATH"
-	KeyListen    = "LISTEN"
-	KeyStorage   = "STORAGE"
+	KeyENV         = "ENV"
+	KeyTimeOut     = "TIME_OUT"
+	KeyLogLevel    = "LOG_LEVEL"
+	KeyLogOutput   = "LOG_OUTPUT"
+	KeyHostname    = "HOSTNAME"
+	KeyHTTPS       = "HTTPS"
+	KeyCertPath    = "CERT_PATH"
+	KeyKeyPath     = "KEY_PATH"
+	KeyListen      = "LISTEN"
+	KeyStorage     = "STORAGE"
+	KeyStoragePath = "STORAGE_PATH"
 
 	StorageFS     = "fs"
 	StorageBoltDB = "boltdb"
@@ -158,21 +158,12 @@ func LoadFromEnv(e Env, timeOut time.Duration) (Options, error) {
 	conf.CertPath = Getval(KeyCertPath, "")
 
 	conf.Listen = Getval(KeyListen, "")
-	envStorage := Getval(KeyStorage, "")
+	typ := Getval(KeyStorage, "")
+	path := Getval(KeyStoragePath, "")
 
-	// path = fs:///storage/dev/
-	for _, piece := range filepath.SplitList(strings.ToLower(envStorage)) {
-		typ, path := ParseStorageDsn(piece)
-		if !ValidEnv(typ) {
-			typ = DefaultStorage
-			path = piece
-		}
-		st := Storage{
-			Type: typ,
-			Path: filepath.Clean(path),
-		}
-		conf.Storage = append(conf.Storage, st)
-	}
+	conf.Storage.Type = typ
+	conf.Storage.Path = path
+	conf.Storage.Path = normalizeStoragePath(path, conf.Storage, e)
 
 	return conf, nil
 }
@@ -190,7 +181,7 @@ func ValidStorageType(typ string) bool {
 	return false
 }
 
-func ParseStorageDsn(s string) (string, string) {
+func ParseStorageDSN(s string) (string, string) {
 	r := regexp.MustCompile(fmt.Sprintf(`(%s):\/\/(.+)`, strings.Join(ValidStorageTypes, "|")))
 	found := r.FindAllSubmatch([]byte(s), -1)
 	if len(found) == 0 {

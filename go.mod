@@ -8,7 +8,6 @@ require (
 	github.com/alecthomas/kong v0.8.0
 	github.com/go-ap/activitypub v0.0.0-20240211124657-820024a66b78
 	github.com/go-ap/errors v0.0.0-20231003111023-183eef4b31b7
-	github.com/go-ap/fedbox v0.0.0-20230730145122-ecd6576fae5b
 	github.com/go-ap/processing v0.0.0-20240213082751-856796c34181
 	github.com/go-ap/storage-badger v0.0.0-20240213083012-a833ff27ccb6
 	github.com/go-ap/storage-boltdb v0.0.0-20240213083028-23a12483788f

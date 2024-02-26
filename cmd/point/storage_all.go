@@ -10,6 +10,7 @@ import (
 	boltdb "github.com/go-ap/storage-boltdb"
 	fs "github.com/go-ap/storage-fs"
 	sqlite "github.com/go-ap/storage-sqlite"
+	"github.com/go-ap/webfinger/internal/config"
 )
 
 func getBadgerStorage(c Config, l lw.Logger) (processing.Store, error) {
@@ -53,13 +54,13 @@ func getFsStorage(c Config, l lw.Logger) (processing.Store, error) {
 
 func Storage(c Config, l lw.Logger) (processing.Store, error) {
 	switch c.Storage {
-	case StorageBoltDB:
+	case config.StorageBoltDB:
 		return getBoltStorage(c, l)
-	case StorageBadger:
+	case config.StorageBadger:
 		return getBadgerStorage(c, l)
-	case StorageSqlite:
+	case config.StorageSqlite:
 		return getSqliteStorage(c, l)
-	case StorageFS:
+	case config.StorageFS:
 		return getFsStorage(c, l)
 	}
 	return nil, errors.NotImplementedf("Invalid storage type %s", c.Storage)

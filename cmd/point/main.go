@@ -2,34 +2,31 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
 	"git.sr.ht/~mariusor/lw"
 	w "git.sr.ht/~mariusor/wrapper"
 	"github.com/alecthomas/kong"
-	"github.com/go-ap/processing"
 	"github.com/go-ap/webfinger"
 	"github.com/go-ap/webfinger/internal/config"
+	"github.com/joho/godotenv"
 )
 
 var Point struct {
 	ListenOn string   `required:"" name:"listen" help:"The socket to listen on." default:"localhost:3666"`
+	Env      string   `name:"env" help:"Environment type: ${env_types}" default:"${default_env}"`
 	KeyPath  string   `name:"key-path" help:"SSL key path for HTTPS." type:"path"`
 	CertPath string   `name:"cert-path" help:"SSL cert path for HTTPS." type:"path"`
-	Storage  []string `required:"" flag:"" name:"storage" help:"Storage DSN strings of form type:///path/to/storage."`
+	Config   []string `name:"config" help:"Configuration path for .env file" group:"config-options" xor:"config-options"`
+	Storage  []string `name:"storage" help:"Storage DSN strings of form type:///path/to/storage." group:"config-options" xor:"config-options"`
 }
-
-const (
-	StorageBoltDB = "boltdb"
-	StorageBadger = "badger"
-	StorageSqlite = "sqlite"
-	StorageFS     = "fs"
-)
 
 var l = lw.Dev()
 
@@ -38,35 +35,36 @@ type Config struct {
 	Path    string
 }
 
-func exit(errs ...error) {
-	if len(errs) == 0 {
-		os.Exit(0)
-		return
-	}
-	for _, err := range errs {
-		l.Errorf("%s", err)
-	}
-	os.Exit(-1)
-}
+var defaultTimeout = time.Second * 10
 
 func main() {
-	ktx := kong.Parse(&Point, kong.Bind(l))
+	ktx := kong.Parse(
+		&Point,
+		kong.Bind(l),
+		kong.Vars{
+			"env_types":   strings.Join([]string{string(config.DEV), string(config.PROD)}, ", "),
+			"default_env": string(config.DEV),
+		},
+	)
+	env := config.DEV
+	if config.ValidEnv(Point.Env) {
+		env = config.Env(Point.Env)
+	}
 
-	stores := make([]processing.ReadStore, 0)
-	for _, sto := range Point.Storage {
-		typ, path := config.ParseStorageDsn(sto)
-
-		if !config.ValidStorageType(typ) {
-			typ = config.DefaultStorage
-			path = sto
+	var stores []webfinger.FullStorage
+	var err error
+	if len(Point.Storage) > 0 {
+		if stores, err = loadStoresFromDSNs(Point.Storage, env, l.WithContext(lw.Ctx{"log": "storage"})); err != nil {
+			l.Errorf("Errors loading storage paths: %+s", err)
 		}
-		conf := config.Storage{Type: typ, Path: path}
-		db, err := config.NewStorage(conf, l)
-		if err != nil {
-			exit(fmt.Errorf("unable to initialize storage backend: %w", err))
-			return
+	}
+	if len(Point.Config) > 0 {
+		if stores, err = loadStoresFromConfigs(Point.Config, env, l.WithContext(lw.Ctx{"log": "storage"})); err != nil {
+			l.Errorf("Errors loading config files: %+s", err)
 		}
-		stores = append(stores, db)
+	}
+	if err != nil {
+		os.Exit(1)
 	}
 
 	m := http.NewServeMux()
@@ -89,7 +87,7 @@ func main() {
 		setters = append(setters, w.OnTCP(Point.ListenOn))
 	}
 
-	ctx, cancelFn := context.WithTimeout(context.TODO(), time.Second*10)
+	ctx, cancelFn := context.WithTimeout(context.TODO(), defaultTimeout)
 	defer cancelFn()
 
 	// Get start/stop functions for the http server
@@ -130,4 +128,60 @@ func main() {
 	}
 
 	ktx.Exit(exit)
+}
+
+func loadStoresFromDSNs(dsns []string, env config.Env, l lw.Logger) ([]webfinger.FullStorage, error) {
+	stores := make([]webfinger.FullStorage, 0)
+	errs := make([]error, 0)
+	for _, sto := range dsns {
+		typ, path := config.ParseStorageDSN(sto)
+
+		if !config.ValidStorageType(typ) {
+			typ = config.DefaultStorage
+			path = sto
+		}
+		conf := config.Storage{Type: typ, Path: path}
+		db, err := config.NewStorage(conf, env, l)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("unable to initialize storage backend [%s]%s: %w", typ, path, err))
+			continue
+		}
+		fs, ok := db.(webfinger.FullStorage)
+		if !ok {
+			errs = append(errs, fmt.Errorf("invalid storage backend %T [%s]%s", db, typ, path))
+			continue
+		}
+		stores = append(stores, fs)
+	}
+	return stores, errors.Join(errs...)
+}
+
+func loadStoresFromConfigs(paths []string, env config.Env, l lw.Logger) ([]webfinger.FullStorage, error) {
+	stores := make([]webfinger.FullStorage, 0)
+	errs := make([]error, 0)
+	config.Prefix = "fedbox"
+	for _, p := range paths {
+		if err := godotenv.Load(p); err != nil {
+			errs = append(errs, err)
+			continue
+		}
+		opts, err := config.LoadFromEnv(env, defaultTimeout)
+		st := opts.Storage
+		if err != nil {
+			errs = append(errs, fmt.Errorf("unable to load configuration %s: %w", p, err))
+			continue
+		}
+		db, err := config.NewStorage(opts.Storage, opts.Env, l)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("unable to initialize storage backend [%s]%s: %w", st.Type, st.Path, err))
+			continue
+		}
+		fs, ok := db.(webfinger.FullStorage)
+		if !ok {
+			errs = append(errs, fmt.Errorf("invalid storage backend %T [%s]%s", db, st.Type, st.Path))
+			continue
+		}
+		stores = append(stores, fs)
+	}
+	return stores, errors.Join(errs...)
 }

@@ -17,7 +17,9 @@ type handler struct {
 	l lw.Logger
 }
 
-func New(l lw.Logger, db ...processing.ReadStore) handler {
+type FullStorage = processing.ReadStore
+
+func New(l lw.Logger, db ...FullStorage) handler {
 	return handler{s: db, l: l}
 }
 
