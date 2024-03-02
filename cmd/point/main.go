@@ -107,7 +107,7 @@ func main() {
 
 	// Get start/stop functions for the http server
 	srvRun, srvStop := w.HttpServer(setters...)
-	l.Infof("Listening for webfinger requests on %s", Point.ListenOn)
+	l.Infof("Listening for webfinger requests")
 	stopFn := func() {
 		if err := srvStop(ctx); err != nil {
 			l.Errorf("%+v", err)
