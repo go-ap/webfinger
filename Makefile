@@ -5,15 +5,16 @@ SHELL := bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
+PROJECT_NAME := point
+ENV ?= dev
+STORAGE ?=
+
 LDFLAGS ?= -X main.version=$(VERSION)
 BUILDFLAGS ?= -a -ldflags '$(LDFLAGS)'
 TEST_FLAGS ?= -count=1
 
 GO ?= go
-ENV ?= dev
-STORAGE ?=
-APPSOURCES := $(wildcard ./*.go)
-PROJECT_NAME := point
+APPSOURCES := $(wildcard ./*.go cmd/point/*.go)
 
 TAGS := $(ENV)
 ifneq ($(STORAGE), )
@@ -27,40 +28,45 @@ ifneq ($(ENV), dev)
 	BUILDFLAGS += -trimpath
 endif
 
-ifeq ($(VERSION), )
-	ifeq ($(shell git describe --always > /dev/null 2>&1 ; echo $$?), 0)
-		BRANCH=$(shell git rev-parse --abbrev-ref HEAD | tr '/' '-')
-		HASH=$(shell git rev-parse --short HEAD)
-		VERSION ?= $(shell printf "%s-%s" "$(BRANCH)" "$(HASH)")
-	endif
-	ifeq ($(shell git describe --tags > /dev/null 2>&1 ; echo $$?), 0)
-		VERSION ?= $(shell git describe --tags | tr '/' '-')
-	endif
+ifeq ($(shell git describe --always > /dev/null 2>&1 ; echo $$?), 0)
+	BRANCH=$(shell git rev-parse --abbrev-ref HEAD | tr '/' '-')
+	HASH=$(shell git rev-parse --short HEAD)
+	VERSION ?= $(shell printf "%s-%s" "$(BRANCH)" "$(HASH)")
+endif
+ifeq ($(shell git describe --tags > /dev/null 2>&1 ; echo $$?), 0)
+	VERSION ?= $(shell git describe --tags | tr '/' '-')
 endif
 
 BUILD := $(GO) build $(BUILDFLAGS)
 TEST := $(GO) test $(BUILDFLAGS)
 
-.PHONY: all run clean test coverage download
+.PHONY: all point download run clean test coverage
 
 all: point
 
-download:
+download: go.sum
+
+go.sum: go.mod
 	$(GO) mod download all
 	$(GO) mod tidy
 
 point: bin/point
-bin/point: go.mod cmd/point/main.go $(APPSOURCES) download
+bin/point: go.mod go.sum $(APPSOURCES)
 	$(BUILD) -tags "$(TAGS)" -o $@ ./cmd/point
 
-run: point
+run: ./bin/point
 	@./bin/point
 
 clean:
 	-$(RM) bin/*
+	$(GO) build clean
+	$(MAKE) -C images $@
+
+images:
+	$(MAKE) -C images $@
 
 test: TEST_TARGET := .
-test: download
+test: go.sum
 	$(TEST) $(TEST_FLAGS) -tags "$(TAGS)" $(TEST_TARGET)
 
 coverage: TEST_TARGET := .
