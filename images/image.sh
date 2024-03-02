@@ -16,9 +16,9 @@ if [[ -z "${_builder}" ]]; then
     exit 1
 fi
 
-echo "Building image ${_image_name} for host=${_hostname} env:${_environment} port:${_listen_port}"
+echo "Building image ${_image_name} for host:${_hostname} env:${_environment} port:${_listen_port} version:${_version}"
 
-buildah run "${_builder}" make ENV="${_environment}" all
+buildah run "${_builder}" make ENV="${_environment}" VERSION="${_version}" all
 buildah run "${_builder}" ./images/gen-certs.sh ${_hostname}
 
 _image=$(buildah from gcr.io/distroless/static:latest)
