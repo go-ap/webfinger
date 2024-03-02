@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strings"
 	"syscall"
 	"time"
@@ -37,6 +38,8 @@ type Config struct {
 
 var defaultTimeout = time.Second * 10
 
+var version = "HEAD"
+
 func main() {
 	ktx := kong.Parse(
 		&Point,
@@ -49,6 +52,10 @@ func main() {
 	env := config.DEV
 	if config.ValidEnv(Point.Env) {
 		env = config.Env(Point.Env)
+	}
+
+	if build, ok := debug.ReadBuildInfo(); ok && version == "HEAD" && build.Main.Version != "(devel)" {
+		version = build.Main.Version
 	}
 
 	var stores []webfinger.FullStorage
@@ -68,7 +75,15 @@ func main() {
 	}
 
 	m := http.NewServeMux()
+
 	h := webfinger.New(l, stores...)
+
+	logCtx := lw.Ctx{
+		"version":  version,
+		"listenOn": Point.ListenOn,
+	}
+	l = l.WithContext(logCtx)
+
 	m.HandleFunc("/.well-known/webfinger", h.HandleWebFinger)
 	m.HandleFunc("/.well-known/host-meta", h.HandleHostMeta)
 
