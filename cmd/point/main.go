@@ -159,7 +159,6 @@ func loadStoresFromDSNs(dsns []string, env config.Env, l lw.Logger) ([]webfinger
 func loadStoresFromConfigs(paths []string, env config.Env, l lw.Logger) ([]webfinger.FullStorage, error) {
 	stores := make([]webfinger.FullStorage, 0)
 	errs := make([]error, 0)
-	config.Prefix = "fedbox"
 	for _, p := range paths {
 		if err := godotenv.Load(p); err != nil {
 			errs = append(errs, err)
