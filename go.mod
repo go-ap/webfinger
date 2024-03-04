@@ -6,9 +6,9 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20230317075520-07e173563bf8
 	git.sr.ht/~mariusor/wrapper v0.0.0-20240210113306-c862d947a747
 	github.com/alecthomas/kong v0.8.0
-	github.com/go-ap/activitypub v0.0.0-20240211124657-820024a66b78
-	github.com/go-ap/errors v0.0.0-20231003111023-183eef4b31b7
-	github.com/go-ap/processing v0.0.0-20240219170415-0288cef1f678
+	github.com/go-ap/activitypub v0.0.0-20240304122919-ef7a45e2d04a
+	github.com/go-ap/errors v0.0.0-20240304112515-6077fa9c17b0
+	github.com/go-ap/processing v0.0.0-20240304123656-97b0484ccb3c
 	github.com/go-ap/storage-badger v0.0.0-20240213083012-a833ff27ccb6
 	github.com/go-ap/storage-boltdb v0.0.0-20240213083028-23a12483788f
 	github.com/go-ap/storage-fs v0.0.0-20240213082822-39deada454d7
@@ -24,7 +24,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ap/cache v0.0.0-20240211125123-3bb4d1c6309b // indirect
 	github.com/go-ap/client v0.0.0-20240211124832-961fcce8d438 // indirect
-	github.com/go-ap/filters v0.0.0-20240219215202-3bb92c250e29 // indirect
+	github.com/go-ap/filters v0.0.0-20240304123324-2c49f9d9a5e3 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -53,7 +53,7 @@ require (
 	golang.org/x/crypto v0.20.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/oauth2 v0.17.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
