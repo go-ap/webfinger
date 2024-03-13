@@ -53,8 +53,7 @@ func getFsStorage(c Storage, l lw.Logger) (webfinger.FullStorage, error) {
 	return fs.New(fs.Config{
 		Path:        c.Path,
 		CacheEnable: true,
-		LogFn:       l.Infof,
-		ErrFn:       l.Errorf,
+		Logger:      l,
 	})
 }
 
