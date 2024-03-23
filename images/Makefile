@@ -5,26 +5,31 @@ SHELL := bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
-ENV ?= prod
-APP_HOSTNAME ?= point.local
+ENV ?= dev
+APP_HOSTNAME ?= point
 PORT ?= 4001
+STORAGE ?= all
 TAG ?= $(ENV)
+VERSION ?= HEAD
 
 BUILD_CMD=buildah bud
 RUN_CMD=podman run
 TAG_CMD=podman tag
 PUSH_CMD=podman push
-COMPOSE_CMD=podman-compose
+
+ifneq ($(STORAGE),all)
+	TAG=$(ENV)-$(STORAGE)
+endif
 
 .PHONY: clean images cert build builder push
 
-point.pem:
+$(APP_HOSTNAME).pem:
 	./gen-certs.sh point
 
-cert: point.pem
+cert: $(APP_HOSTNAME).pem
 
 clean:
-	@-$(RM) point.{key,crt,pem}
+	@-$(RM) $(APP_HOSTNAME).{key,crt,pem}
 
 builder:
 	./build.sh .. point/builder

@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
+	"path"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -41,7 +43,7 @@ type BackendConfig struct {
 	Name    string
 }
 
-type Storage struct {
+type StorageConfig struct {
 	Type string
 	Path string
 }
@@ -56,7 +58,7 @@ type Options struct {
 	KeyPath   string
 	Host      string
 	Listen    string
-	Storage   Storage
+	Storage   StorageConfig
 }
 
 type StorageType string
@@ -166,6 +168,21 @@ func LoadFromEnv(e Env, timeOut time.Duration) (Options, error) {
 	conf.Storage.Path = normalizeStoragePath(path, conf.Storage, e)
 
 	return conf, nil
+}
+
+func normalizeStoragePath(p string, o StorageConfig, env Env) string {
+	if len(p) == 0 {
+		return p
+	}
+	if p[0] == '~' {
+		p = os.Getenv("HOME") + p[1:]
+	}
+	if !filepath.IsAbs(p) {
+		p, _ = filepath.Abs(p)
+	}
+	p = strings.ReplaceAll(p, "%env%", string(env))
+	p = strings.ReplaceAll(p, "%storage%", o.Type)
+	return path.Clean(p)
 }
 
 var ValidStorageTypes = []string{

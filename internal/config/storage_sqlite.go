@@ -4,14 +4,15 @@ package config
 
 import (
 	"git.sr.ht/~mariusor/lw"
-	"github.com/go-ap/processing"
 	sqlite "github.com/go-ap/storage-sqlite"
+	"github.com/go-ap/webfinger"
 )
 
 const DefaultStorage = StorageSqlite
 
-func Storage(c Storage, l lw.Logger) (processing.Store, error) {
-	l.Debugf("Using sqlite Storage at %s", c.Path)
+func Storage(c StorageConfig, env Env, l lw.Logger) (webfinger.FullStorage, error) {
+	c.Path = normalizeStoragePath(c.Path, c, env)
+	l.Debugf("Using sqlite storage at %s", c.Path)
 	return sqlite.New(sqlite.Config{
 		Path:        c.Path,
 		CacheEnable: true,

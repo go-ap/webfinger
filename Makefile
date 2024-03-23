@@ -59,7 +59,6 @@ run: ./bin/point
 
 clean:
 	-$(RM) bin/*
-	$(GO) build clean
 	$(MAKE) -C images $@
 
 images:

@@ -155,8 +155,8 @@ func loadStoresFromDSNs(dsns []string, env config.Env, l lw.Logger) ([]webfinger
 			typ = config.DefaultStorage
 			path = sto
 		}
-		conf := config.Storage{Type: typ, Path: path}
-		db, err := config.NewStorage(conf, env, l)
+		conf := config.StorageConfig{Type: typ, Path: path}
+		db, err := config.Storage(conf, env, l)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("unable to initialize storage backend [%s]%s: %w", typ, path, err))
 			continue
@@ -190,7 +190,7 @@ func loadStoresFromConfigs(paths []string, env config.Env, l lw.Logger) ([]webfi
 		}
 
 		st := opts.Storage
-		db, err := config.NewStorage(opts.Storage, opts.Env, l)
+		db, err := config.Storage(opts.Storage, opts.Env, l)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("unable to initialize storage backend [%s]%s: %w", st.Type, st.Path, err))
 			continue
