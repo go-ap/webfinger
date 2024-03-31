@@ -89,20 +89,24 @@ func CheckActorID(url string) func(actor vocab.Actor) bool {
 	}
 }
 
-func LoadIRI(db processing.ReadStore, what vocab.IRI, checkFns ...func(actor vocab.Object) bool) (vocab.Item, error) {
-	result, err := db.Load(what)
-	if err != nil {
-		return nil, errors.NewNotFound(err, "nothing was found at IRI: %s", what)
-	}
+func LoadIRI(dbs []Storage, what vocab.IRI, checkFns ...func(actor vocab.Object) bool) (vocab.Item, error) {
 	var found vocab.Item
-	err = vocab.OnObject(result, func(o *vocab.Object) error {
-		for _, fn := range checkFns {
-			if fn(*o) {
-				found = o
-			}
+	var err error
+
+	for _, db := range dbs {
+		result, err := db.Load(what)
+		if err != nil {
+			return nil, errors.NewNotFound(err, "nothing was found at IRI: %s", what)
 		}
-		return nil
-	})
+		err = vocab.OnObject(result, func(o *vocab.Object) error {
+			for _, fn := range checkFns {
+				if fn(*o) {
+					found = o
+				}
+			}
+			return nil
+		})
+	}
 	return found, err
 }
 
@@ -182,8 +186,6 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	var db processing.ReadStore
-
 	wf := node{}
 	subject := res
 
@@ -201,7 +203,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 		result = a
 	}
 	if typ == "https" {
-		ob, err := LoadIRI(db, vocab.IRI(res), CheckObjectURL(res), CheckObjectID(res))
+		ob, err := LoadIRI(h.s, vocab.IRI(res), CheckObjectURL(res), CheckObjectID(res))
 		if err != nil {
 			handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 			return
