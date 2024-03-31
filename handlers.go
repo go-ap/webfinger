@@ -13,13 +13,16 @@ import (
 )
 
 type handler struct {
-	s []processing.ReadStore
+	s []Storage
 	l lw.Logger
 }
 
-type FullStorage = processing.ReadStore
+type Storage struct {
+	processing.ReadStore
+	Root vocab.Actor
+}
 
-func New(l lw.Logger, db ...FullStorage) handler {
+func New(l lw.Logger, db ...Storage) handler {
 	return handler{s: db, l: l}
 }
 
@@ -103,36 +106,40 @@ func LoadIRI(db processing.ReadStore, what vocab.IRI, checkFns ...func(actor voc
 	return found, err
 }
 
-func LoadActor(db processing.ReadStore, app vocab.Actor, checkFns ...func(actor vocab.Actor) bool) (vocab.Item, error) {
-	inCollection := actors.IRI(app.GetLink())
-	actors, err := db.Load(inCollection)
-	if err != nil {
-		return nil, errors.NewNotFound(err, "no actors found in collection: %s", inCollection)
-	}
+func LoadActor(dbs []Storage, checkFns ...func(actor vocab.Actor) bool) (vocab.Item, error) {
 	var found vocab.Item
-	if actors.IsCollection() {
-		err = vocab.OnCollectionIntf(actors, func(col vocab.CollectionInterface) error {
-			for _, act := range col.Collection() {
-				vocab.OnActor(act, func(a *vocab.Actor) error {
-					for _, fn := range checkFns {
-						if fn(*a) {
-							found = a
+	var err error
+
+	for _, db := range dbs {
+		inCollection := actors.IRI(db.Root.GetLink())
+		actors, err := db.Load(inCollection)
+		if err != nil {
+			return nil, errors.NewNotFound(err, "no actors found in collection: %s", inCollection)
+		}
+		if actors.IsCollection() {
+			err = vocab.OnCollectionIntf(actors, func(col vocab.CollectionInterface) error {
+				for _, act := range col.Collection() {
+					vocab.OnActor(act, func(a *vocab.Actor) error {
+						for _, fn := range checkFns {
+							if fn(*a) {
+								found = a
+							}
 						}
-					}
-					return nil
-				})
-			}
-			return nil
-		})
-	} else {
-		err = vocab.OnActor(actors, func(a *vocab.Actor) error {
-			for _, fn := range checkFns {
-				if fn(*a) {
-					found = a
+						return nil
+					})
 				}
-			}
-			return nil
-		})
+				return nil
+			})
+		} else {
+			err = vocab.OnActor(actors, func(a *vocab.Actor) error {
+				for _, fn := range checkFns {
+					if fn(*a) {
+						found = a
+					}
+				}
+				return nil
+			})
+		}
 	}
 	return found, err
 }
@@ -145,30 +152,6 @@ func handleErr(l lw.Logger) func(r *http.Request, e error) errors.ErrorHandlerFn
 		}(r, e)
 		return errors.HandleError(e)
 	}
-}
-
-func (h handler) findMatchingStorage(hosts ...string) (vocab.Actor, processing.ReadStore, error) {
-	var app vocab.Actor
-	for _, db := range h.s {
-		for _, host := range hosts {
-			host = "https://" + host + "/"
-			res, err := db.Load(vocab.IRI(host))
-			if err != nil {
-				continue
-			}
-			err = vocab.OnActor(res, func(actor *vocab.Actor) error {
-				app = *actor
-				return nil
-			})
-			if err != nil {
-				continue
-			}
-			if app.ID != "" {
-				return app, db, nil
-			}
-		}
-	}
-	return app, nil, fmt.Errorf("unable to find storage")
 }
 
 // HandleWebFinger serves /.well-known/webfinger/
@@ -199,26 +182,14 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	var app vocab.Actor
 	var db processing.ReadStore
-	var err error
-	for _, host := range hosts {
-		if app, db, err = h.findMatchingStorage(host); err == nil {
-			break
-		}
-		h.l.Debugf("unable to load storage for %s: %s", host, err)
-	}
-	if db == nil {
-		handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
-		return
-	}
 
 	wf := node{}
 	subject := res
 
 	var result vocab.Item
 	if typ == "acct" {
-		a, err := LoadActor(db, app, CheckActorName(handle), CheckActorURL(handle), CheckActorID(handle))
+		a, err := LoadActor(h.s, CheckActorName(handle), CheckActorURL(handle), CheckActorID(handle))
 		if err != nil {
 			handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 			return

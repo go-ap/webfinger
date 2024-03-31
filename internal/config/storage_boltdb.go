@@ -4,13 +4,13 @@ package config
 
 import (
 	"git.sr.ht/~mariusor/lw"
+	"github.com/go-ap/processing"
 	boltdb "github.com/go-ap/storage-boltdb"
-	"github.com/go-ap/webfinger"
 )
 
 const DefaultStorage = StorageBoltDB
 
-func Storage(c StorageConfig, env Env, l lw.Logger) (webfinger.FullStorage, error) {
+func Storage(c StorageConfig, env Env, l lw.Logger) (processing.ReadStore, error) {
 	c.Path = normalizeStoragePath(c.Path, c, env)
 	l.Debugf("Using boltdb storage from %s", c.Path)
 	return boltdb.New(boltdb.Config{

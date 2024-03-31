@@ -5,16 +5,16 @@ package config
 import (
 	"git.sr.ht/~mariusor/lw"
 	"github.com/go-ap/errors"
+	"github.com/go-ap/processing"
 	badger "github.com/go-ap/storage-badger"
 	boltdb "github.com/go-ap/storage-boltdb"
 	fs "github.com/go-ap/storage-fs"
 	sqlite "github.com/go-ap/storage-sqlite"
-	"github.com/go-ap/webfinger"
 )
 
 const DefaultStorage = StorageFS
 
-func getBadgerStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, error) {
+func getBadgerStorage(c StorageConfig, l lw.Logger) (processing.ReadStore, error) {
 	l.Debugf("Using badger storage from %s", c.Path)
 	return badger.New(badger.Config{
 		Path:        c.Path,
@@ -24,7 +24,7 @@ func getBadgerStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, erro
 	})
 }
 
-func getBoltStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, error) {
+func getBoltStorage(c StorageConfig, l lw.Logger) (processing.ReadStore, error) {
 	l.Debugf("Using boltdb storage from %s", c.Path)
 	return boltdb.New(boltdb.Config{
 		Path:  c.Path,
@@ -33,7 +33,7 @@ func getBoltStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, error)
 	})
 }
 
-func getSqliteStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, error) {
+func getSqliteStorage(c StorageConfig, l lw.Logger) (processing.ReadStore, error) {
 	l.Debugf("Using sqlite storage at %s", c.Path)
 	return sqlite.New(sqlite.Config{
 		Path:        c.Path,
@@ -43,7 +43,7 @@ func getSqliteStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, erro
 	})
 }
 
-func getFsStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, error) {
+func getFsStorage(c StorageConfig, l lw.Logger) (processing.ReadStore, error) {
 	l.Debugf("Using fs storage at %s", c.Path)
 	return fs.New(fs.Config{
 		Path:        c.Path,
@@ -52,7 +52,7 @@ func getFsStorage(c StorageConfig, l lw.Logger) (webfinger.FullStorage, error) {
 	})
 }
 
-func Storage(c StorageConfig, env Env, l lw.Logger) (webfinger.FullStorage, error) {
+func Storage(c StorageConfig, env Env, l lw.Logger) (processing.ReadStore, error) {
 	c.Path = normalizeStoragePath(c.Path, c, env)
 	switch c.Type {
 	case StorageBoltDB:
