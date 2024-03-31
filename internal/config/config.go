@@ -20,14 +20,20 @@ type Env string
 
 const (
 	PROD Env = "prod"
+	QA   Env = "qa"
 	DEV  Env = "dev"
 	TEST Env = "test"
 )
 
-var ValidEnvs = []Env{PROD, DEV, TEST}
+var ValidEnvs = []Env{PROD, QA, DEV, TEST}
 
 func ValidEnv(s string) bool {
-	return s == string(PROD) || s == string(DEV) || s == string(TEST)
+	for _, v := range ValidEnvs {
+		if strings.Contains(s, string(v)) {
+			return true
+		}
+	}
+	return false
 }
 
 func (e Env) IsProd() bool {
