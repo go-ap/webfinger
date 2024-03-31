@@ -73,6 +73,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if len(stores) == 0 {
+		l.Errorf("Unable to find any valid storage path")
+		os.Exit(1)
+	}
+
 	m := http.NewServeMux()
 
 	h := webfinger.New(l, stores...)
