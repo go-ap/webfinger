@@ -28,6 +28,9 @@ func New(l lw.Logger, db ...Storage) handler {
 
 var actors = vocab.CollectionPath("actors")
 
+type filterObjectFn func(vocab.Object) bool
+type filterActorFn func(vocab.Actor) bool
+
 func ValueMatchesLangRefs(val vocab.Content, toCheck ...vocab.NaturalLanguageValues) bool {
 	for _, lr := range toCheck {
 		for _, name := range lr {
@@ -40,6 +43,9 @@ func ValueMatchesLangRefs(val vocab.Content, toCheck ...vocab.NaturalLanguageVal
 }
 
 func iriMatchesItem(iri vocab.IRI, it vocab.Item) bool {
+	if vocab.IsNil(it) {
+		return false
+	}
 	if vocab.IsIRI(it) || vocab.IsObject(it) {
 		return iri.Equals(it.GetLink(), false)
 	}
@@ -59,44 +65,43 @@ func iriMatchesItem(iri vocab.IRI, it vocab.Item) bool {
 	return match
 }
 
-func CheckActorName(name string) func(actor vocab.Actor) bool {
+func CheckActorName(name string) filterActorFn {
 	return func(a vocab.Actor) bool {
 		return ValueMatchesLangRefs(vocab.Content(name), a.PreferredUsername, a.Name)
 	}
 }
 
-func CheckObjectURL(url string) func(actor vocab.Object) bool {
+func CheckObjectURL(url string) filterObjectFn {
 	return func(a vocab.Object) bool {
 		return iriMatchesItem(vocab.IRI(url), a.URL)
 	}
 }
 
-func CheckActorURL(url string) func(actor vocab.Actor) bool {
+func CheckActorURL(url string) filterActorFn {
 	return func(a vocab.Actor) bool {
 		return iriMatchesItem(vocab.IRI(url), a.URL)
 	}
 }
 
-func CheckObjectID(url string) func(ob vocab.Object) bool {
+func CheckObjectID(url string) filterObjectFn {
 	return func(o vocab.Object) bool {
 		return iriMatchesItem(vocab.IRI(url), o.ID)
 	}
 }
 
-func CheckActorID(url string) func(actor vocab.Actor) bool {
+func CheckActorID(url string) filterActorFn {
 	return func(a vocab.Actor) bool {
 		return iriMatchesItem(vocab.IRI(url), a.ID)
 	}
 }
 
-func LoadIRI(dbs []Storage, what vocab.IRI, checkFns ...func(actor vocab.Object) bool) (vocab.Item, error) {
+func LoadIRI(dbs []Storage, what vocab.IRI, checkFns ...filterObjectFn) (vocab.Item, error) {
 	var found vocab.Item
-	var err error
 
 	for _, db := range dbs {
 		result, err := db.Load(what)
 		if err != nil {
-			return nil, errors.NewNotFound(err, "nothing was found at IRI: %s", what)
+			continue
 		}
 		err = vocab.OnObject(result, func(o *vocab.Object) error {
 			for _, fn := range checkFns {
@@ -107,10 +112,28 @@ func LoadIRI(dbs []Storage, what vocab.IRI, checkFns ...func(actor vocab.Object)
 			return nil
 		})
 	}
-	return found, err
+	if !vocab.IsNil(found) {
+		return found, nil
+	}
+	return LoadActor(dbs, convertToActorChecks(checkFns...)...)
 }
 
-func LoadActor(dbs []Storage, checkFns ...func(actor vocab.Actor) bool) (vocab.Item, error) {
+func convertToActorChecks(checkFns ...filterObjectFn) []filterActorFn {
+	actorCheckFns := make([]filterActorFn, 0, len(checkFns))
+	for _, fn := range checkFns {
+		actorCheckFns = append(actorCheckFns, func(actor vocab.Actor) bool {
+			result := false
+			_ = vocab.OnObject(actor, func(ob *vocab.Object) error {
+				result = fn(*ob)
+				return nil
+			})
+			return result
+		})
+	}
+	return actorCheckFns
+}
+
+func LoadActor(dbs []Storage, checkFns ...filterActorFn) (vocab.Item, error) {
 	var found vocab.Item
 	var err error
 
