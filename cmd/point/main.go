@@ -120,31 +120,23 @@ func main() {
 	defer stopFn()
 
 	exit := w.RegisterSignalHandlers(w.SignalHandlers{
-		syscall.SIGHUP: func(_ chan int) {
+		syscall.SIGHUP: func(_ chan<- int) {
 			l.Infof("SIGHUP received, reloading configuration")
 		},
-		syscall.SIGINT: func(exit chan int) {
+		syscall.SIGINT: func(exit chan<- int) {
 			l.Infof("SIGINT received, stopping")
 			exit <- 0
 		},
-		syscall.SIGTERM: func(exit chan int) {
+		syscall.SIGTERM: func(exit chan<- int) {
 			l.Infof("SIGITERM received, force stopping")
 			exit <- 0
 		},
-		syscall.SIGQUIT: func(exit chan int) {
+		syscall.SIGQUIT: func(exit chan<- int) {
 			l.Infof("SIGQUIT received, force stopping with core-dump")
 			exit <- 0
 		},
-	}).Exec(func() error {
-		if err := srvRun(); err != nil {
-			l.Errorf("%+v", err)
-			return err
-		}
-		return nil
-	})
-	if exit == 0 {
-		l.Infof("Shutting down")
-	}
+	}).Exec(ctx, srvRun)
+	l.Infof("Shutting down")
 
 	ktx.Exit(exit)
 }
