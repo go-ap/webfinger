@@ -8,11 +8,11 @@ require (
 	github.com/alecthomas/kong v0.8.0
 	github.com/go-ap/activitypub v0.0.0-20240408091739-ba76b44c2594
 	github.com/go-ap/errors v0.0.0-20240304112515-6077fa9c17b0
-	github.com/go-ap/processing v0.0.0-20240801112744-d675141d6f34
+	github.com/go-ap/processing v0.0.0-20240803123347-9d6c8c8868f2
 	github.com/go-ap/storage-badger v0.0.0-20240801114622-4d730a7aea87
-	github.com/go-ap/storage-boltdb v0.0.0-20240801113939-df8a5e5ae661
-	github.com/go-ap/storage-fs v0.0.0-20240801113231-98abc970971a
-	github.com/go-ap/storage-sqlite v0.0.0-20240801113731-cf940719cd9d
+	github.com/go-ap/storage-boltdb v0.0.0-20240803123915-a133721967e9
+	github.com/go-ap/storage-fs v0.0.0-20240803123436-43fd4521ee5a
+	github.com/go-ap/storage-sqlite v0.0.0-20240803123516-e64a31bf814d
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -43,7 +43,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
-	github.com/openshift/osin v1.0.1 // indirect
+	github.com/openshift/osin v1.0.2-0.20220317075346-0f4d38c6e53f // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
