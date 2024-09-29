@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-#set -x
+set -e
 
 _workdir=${1:-../}
 _image_name=${2:-point/builder}
 
 _context=$(realpath "${_workdir}")
 
-_builder=$(buildah from docker.io/library/golang:1.22)
+_builder=$(buildah from docker.io/library/golang:1.23)
 
 buildah config --env GO111MODULE=on "${_builder}"
 buildah config --env GOWORK=off "${_builder}"
