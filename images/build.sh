@@ -16,6 +16,7 @@ buildah copy --ignorefile "${_context}/.containerignore" --contextdir "${_contex
 
 buildah config --workingdir /go/src/app "${_builder}"
 
-buildah run "${_builder}" make download && go mod vendor
+buildah run "${_builder}" make download
+buildah run "${_builder}" go mod vendor
 
 buildah commit "${_builder}" "${_image_name}"

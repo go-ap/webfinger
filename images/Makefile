@@ -24,7 +24,7 @@ endif
 .PHONY: clean images cert build builder push
 
 $(APP_HOSTNAME).pem:
-	./gen-certs.sh point
+	./gen-certs.sh $(APP_HOSTNAME)
 
 cert: $(APP_HOSTNAME).pem
 
@@ -34,7 +34,7 @@ clean:
 builder:
 	./build.sh .. point/builder
 
-build:
+build: $(APP_HOSTNAME).pem
 	ENV=$(ENV) VERSION=$(VERSION) STORAGE=$(STORAGE) PORT=$(PORT) APP_HOSTNAME=$(APP_HOSTNAME) ./image.sh $(APP_HOSTNAME)/app:$(TAG)
 
 push: build
