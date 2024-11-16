@@ -6,13 +6,13 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20240906100438-00d2184b2120
 	git.sr.ht/~mariusor/wrapper v0.0.0-20240519120935-f877e4d97def
 	github.com/alecthomas/kong v0.8.0
-	github.com/go-ap/activitypub v0.0.0-20241104140659-be99a725f9d5
+	github.com/go-ap/activitypub v0.0.0-20241114170014-e897df079e3d
 	github.com/go-ap/errors v0.0.0-20240910140019-1e9d33cc1568
-	github.com/go-ap/processing v0.0.0-20241110174821-a01379c6c51b
-	github.com/go-ap/storage-badger v0.0.0-20241110174930-30adcfad7ba7
-	github.com/go-ap/storage-boltdb v0.0.0-20241110174900-31f1059e2bcd
-	github.com/go-ap/storage-fs v0.0.0-20241110174856-cf4295473c6e
-	github.com/go-ap/storage-sqlite v0.0.0-20241110174917-7f83012765f5
+	github.com/go-ap/processing v0.0.0-20241116101014-acf5770bece8
+	github.com/go-ap/storage-badger v0.0.0-20241116101439-edb3c971a98e
+	github.com/go-ap/storage-boltdb v0.0.0-20241116101336-a6cd223d8f06
+	github.com/go-ap/storage-fs v0.0.0-20241116101240-621ee63b2f4f
+	github.com/go-ap/storage-sqlite v0.0.0-20241116101420-4137decb2615
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -23,12 +23,12 @@ require (
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
 	github.com/bits-and-blooms/bitset v1.15.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.3.1 // indirect
-	github.com/dgraph-io/ristretto v1.0.0 // indirect
+	github.com/dgraph-io/badger/v4 v4.4.0 // indirect
+	github.com/dgraph-io/ristretto/v2 v2.0.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ap/cache v0.0.0-20241104141048-912618952f30 // indirect
-	github.com/go-ap/client v0.0.0-20241104140838-929b90e84e8a // indirect
-	github.com/go-ap/filters v0.0.0-20241110174345-2802456d0c02 // indirect
+	github.com/go-ap/client v0.0.0-20241114180623-d0658a04422c // indirect
+	github.com/go-ap/filters v0.0.0-20241116100812-7fd60f23761e // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-chi/chi/v5 v5.1.0 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
@@ -62,13 +62,13 @@ require (
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.7 // indirect
 	modernc.org/gc/v3 v3.0.0-20241004144649-1aea3fae8852 // indirect
 	modernc.org/libc v1.61.0 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
-	modernc.org/sqlite v1.33.1 // indirect
+	modernc.org/sqlite v1.34.1 // indirect
 	modernc.org/strutil v1.2.0 // indirect
 	modernc.org/token v1.1.0 // indirect
 )
