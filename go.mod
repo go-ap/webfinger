@@ -6,36 +6,34 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20241117105956-4b4009e28502
 	git.sr.ht/~mariusor/wrapper v0.0.0-20240519120935-f877e4d97def
 	github.com/alecthomas/kong v0.8.0
-	github.com/go-ap/activitypub v0.0.0-20241208161221-f05aa52782bd
-	github.com/go-ap/errors v0.0.0-20240910140019-1e9d33cc1568
-	github.com/go-ap/processing v0.0.0-20241209163907-0a45ff07dabc
-	github.com/go-ap/storage-badger v0.0.0-20241123190340-81ee43f03b77
-	github.com/go-ap/storage-boltdb v0.0.0-20241209164320-a3e1b3cc9c05
-	github.com/go-ap/storage-fs v0.0.0-20241209170406-204e038c46ea
-	github.com/go-ap/storage-sqlite v0.0.0-20241209164353-0dd292a674c4
+	github.com/go-ap/activitypub v0.0.0-20241212161521-36eb87cc3381
+	github.com/go-ap/errors v0.0.0-20241212155021-5a598b6bf467
+	github.com/go-ap/processing v0.0.0-20241212200242-801c045ee1ef
+	github.com/go-ap/storage-badger v0.0.0-20241212203948-8ce8e9be9291
+	github.com/go-ap/storage-boltdb v0.0.0-20241213125406-2dfca26e14ed
+	github.com/go-ap/storage-fs v0.0.0-20241213135751-ebe7cb0a6e93
+	github.com/go-ap/storage-sqlite v0.0.0-20241212203832-c134bc40a73e
 	github.com/joho/godotenv v1.5.1
 )
 
 require (
-	git.sr.ht/~mariusor/cache v0.0.0-20241026131931-1ae5432a2760 // indirect
+	git.sr.ht/~mariusor/cache v0.0.0-20241212172633-e1563652acb4 // indirect
 	git.sr.ht/~mariusor/go-xsd-duration v0.0.0-20220703122237-02e73435a078 // indirect
 	git.sr.ht/~mariusor/mask v0.0.0-20240327084502-ef2a9438457e // indirect
 	git.sr.ht/~mariusor/ssm v0.0.0-20240811085540-34f24cac52b7 // indirect
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
-	github.com/bits-and-blooms/bitset v1.18.0 // indirect
+	github.com/bits-and-blooms/bitset v1.19.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.4.0 // indirect
-	github.com/dgraph-io/ristretto/v2 v2.0.0 // indirect
+	github.com/dgraph-io/badger/v4 v4.5.0 // indirect
+	github.com/dgraph-io/ristretto/v2 v2.0.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/cache v0.0.0-20241208193121-cd0bec1ef821 // indirect
-	github.com/go-ap/client v0.0.0-20241208193750-e95b8f2587fd // indirect
-	github.com/go-ap/filters v0.0.0-20241209163025-ed341d89b69d // indirect
+	github.com/go-ap/cache v0.0.0-20241212161714-4a400f2fb66b // indirect
+	github.com/go-ap/client v0.0.0-20241212174032-4826270ad6a3 // indirect
+	github.com/go-ap/filters v0.0.0-20241212161731-6700826ce543 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-chi/chi/v5 v5.1.0 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/flatbuffers v24.3.25+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
@@ -57,9 +55,9 @@ require (
 	github.com/valyala/fastjson v1.6.4 // indirect
 	go.etcd.io/bbolt v1.3.11 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/crypto v0.30.0 // indirect
-	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d // indirect
-	golang.org/x/net v0.31.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/exp v0.0.0-20241210194714-1829a127f884 // indirect
+	golang.org/x/net v0.32.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
