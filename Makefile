@@ -23,11 +23,6 @@ endif
 
 export CGO_ENABLED=0
 
-ifneq ($(ENV), dev)
-	LDFLAGS += -s -w -extldflags "-static"
-	BUILDFLAGS += -trimpath
-endif
-
 ifeq ($(shell git describe --always > /dev/null 2>&1 ; echo $$?), 0)
 	BRANCH=$(shell git rev-parse --abbrev-ref HEAD | tr '/' '-')
 	HASH=$(shell git rev-parse --short HEAD)
@@ -35,6 +30,11 @@ ifeq ($(shell git describe --always > /dev/null 2>&1 ; echo $$?), 0)
 endif
 ifeq ($(shell git describe --tags > /dev/null 2>&1 ; echo $$?), 0)
 	VERSION ?= $(shell git describe --tags | tr '/' '-')
+endif
+
+ifneq ($(ENV),dev)
+	LDFLAGS += -s -w -extldflags "-static"
+	BUILDFLAGS += -trimpath
 endif
 
 BUILD := $(GO) build $(BUILDFLAGS)

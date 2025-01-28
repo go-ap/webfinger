@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -16,6 +15,7 @@ import (
 	w "git.sr.ht/~mariusor/wrapper"
 	"github.com/alecthomas/kong"
 	vocab "github.com/go-ap/activitypub"
+	"github.com/go-ap/errors"
 	"github.com/go-ap/processing"
 	"github.com/go-ap/webfinger"
 	"github.com/go-ap/webfinger/internal/config"
@@ -50,6 +50,8 @@ func main() {
 	env := config.DEV
 	if config.ValidEnv(Point.Env) {
 		env = config.Env(Point.Env)
+	} else {
+		errors.IncludeBacktrace = false
 	}
 
 	if build, ok := debug.ReadBuildInfo(); ok && version == "HEAD" && build.Main.Version != "(devel)" {
