@@ -5,13 +5,14 @@ go 1.23
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250114195945-ba9c7bcca3c1
 	git.sr.ht/~mariusor/wrapper v0.0.0-20240519120935-f877e4d97def
-	github.com/alecthomas/kong v1.6.0
+	github.com/alecthomas/kong v1.6.1
 	github.com/go-ap/activitypub v0.0.0-20250124194921-d52b4c694e14
 	github.com/go-ap/errors v0.0.0-20250124135319-3da8adefd4a9
+	github.com/go-ap/filters v0.0.0-20250128143727-4cb9a9d7db48
 	github.com/go-ap/processing v0.0.0-20250128143943-aba5b2e775bc
 	github.com/go-ap/storage-badger v0.0.0-20250127153612-8b6fd29ecf73
 	github.com/go-ap/storage-boltdb v0.0.0-20250128144132-e90cd500451e
-	github.com/go-ap/storage-fs v0.0.0-20250128144056-9050d6107ea0
+	github.com/go-ap/storage-fs v0.0.0-20250128172528-d5e58d36bd77
 	github.com/go-ap/storage-sqlite v0.0.0-20250128144112-8691f8bd6b29
 	github.com/joho/godotenv v1.5.1
 )
@@ -29,7 +30,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ap/cache v0.0.0-20250124200926-2c9bbefd884b // indirect
 	github.com/go-ap/client v0.0.0-20250128143823-82049bed7555 // indirect
-	github.com/go-ap/filters v0.0.0-20250128143727-4cb9a9d7db48 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-chi/chi/v5 v5.2.0 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect

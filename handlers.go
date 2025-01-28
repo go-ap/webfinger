@@ -9,6 +9,7 @@ import (
 	"git.sr.ht/~mariusor/lw"
 	vocab "github.com/go-ap/activitypub"
 	"github.com/go-ap/errors"
+	"github.com/go-ap/filters"
 	"github.com/go-ap/processing"
 )
 
@@ -28,130 +29,54 @@ func New(l lw.Logger, db ...Storage) handler {
 
 var actors = vocab.CollectionPath("actors")
 
-type filterObjectFn func(vocab.Object) bool
-type filterActorFn func(vocab.Actor) bool
-
-func ValueMatchesLangRefs(val vocab.Content, toCheck ...vocab.NaturalLanguageValues) bool {
-	for _, lr := range toCheck {
-		for _, name := range lr {
-			if strings.EqualFold(name.String(), val.String()) {
-				return true
-			}
-		}
-	}
-	return false
+func FilterName(name string) filters.Check {
+	return filters.NameIs(name)
 }
 
-func iriMatchesItem(iri vocab.IRI, it vocab.Item) bool {
-	if vocab.IsNil(it) {
-		return false
-	}
-	if vocab.IsIRI(it) || vocab.IsObject(it) {
-		return iri.Equals(it.GetLink(), false)
-	}
-
-	match := false
-	if vocab.IsItemCollection(it) {
-		_ = vocab.OnCollectionIntf(it, func(col vocab.CollectionInterface) error {
-			for _, i := range col.Collection() {
-				if iri.Equals(i.GetLink(), true) {
-					match = true
-					break
-				}
-			}
-			return nil
-		})
-	}
-	return match
+func FilterURL(u string) filters.Check {
+	return filters.SameURL(vocab.IRI(u))
 }
 
-func CheckActorName(name string) filterActorFn {
-	return func(a vocab.Actor) bool {
-		return ValueMatchesLangRefs(vocab.Content(name), a.PreferredUsername, a.Name)
-	}
+func FilterID(id string) filters.Check {
+	return filters.SameID(vocab.ID(id))
 }
 
-func CheckObjectURL(url string) filterObjectFn {
-	return func(a vocab.Object) bool {
-		return iriMatchesItem(vocab.IRI(url), a.URL)
-	}
-}
-
-func CheckActorURL(url string) filterActorFn {
-	return func(a vocab.Actor) bool {
-		return iriMatchesItem(vocab.IRI(url), a.URL)
-	}
-}
-
-func CheckObjectID(url string) filterObjectFn {
-	return func(o vocab.Object) bool {
-		return iriMatchesItem(vocab.IRI(url), o.ID)
-	}
-}
-
-func CheckActorID(url string) filterActorFn {
-	return func(a vocab.Actor) bool {
-		return iriMatchesItem(vocab.IRI(url), a.ID)
-	}
-}
-
-func LoadIRI(dbs []Storage, what vocab.IRI, checkFns ...filterObjectFn) (vocab.Item, error) {
+func LoadIRI(dbs []Storage, what vocab.IRI, checkFns ...filters.Check) (vocab.Item, error) {
 	var found vocab.Item
 
 	for _, db := range dbs {
-		result, err := db.Load(what)
+		serviceIRI := db.Root.GetLink()
+		result, err := db.Load(what, append(checkFns, filters.Authorized(serviceIRI))...)
 		if err != nil {
 			continue
 		}
 		err = vocab.OnObject(result, func(o *vocab.Object) error {
-			for _, fn := range checkFns {
-				if fn(*o) {
-					found = o
-				}
-			}
+			found = o
 			return nil
 		})
 	}
 	if !vocab.IsNil(found) {
 		return found, nil
 	}
-	return LoadActor(dbs, convertToActorChecks(checkFns...)...)
+	return LoadActor(dbs, checkFns...)
 }
 
-func convertToActorChecks(checkFns ...filterObjectFn) []filterActorFn {
-	actorCheckFns := make([]filterActorFn, 0, len(checkFns))
-	for _, fn := range checkFns {
-		actorCheckFns = append(actorCheckFns, func(actor vocab.Actor) bool {
-			result := false
-			_ = vocab.OnObject(actor, func(ob *vocab.Object) error {
-				result = fn(*ob)
-				return nil
-			})
-			return result
-		})
-	}
-	return actorCheckFns
-}
-
-func LoadActor(dbs []Storage, checkFns ...filterActorFn) (vocab.Item, error) {
+func LoadActor(dbs []Storage, checkFns ...filters.Check) (vocab.Item, error) {
 	var found vocab.Item
 	var err error
 
 	for _, db := range dbs {
-		inCollection := actors.IRI(db.Root.GetLink())
-		actors, err := db.Load(inCollection)
+		serviceIRI := db.Root.GetLink()
+		inCollection := actors.IRI(serviceIRI)
+		actors, err := db.Load(inCollection, append(checkFns, filters.Authorized(serviceIRI))...)
 		if err != nil {
 			return nil, errors.NewNotFound(err, "no actors found in collection: %s", inCollection)
 		}
 		if actors.IsCollection() {
 			err = vocab.OnCollectionIntf(actors, func(col vocab.CollectionInterface) error {
 				for _, act := range col.Collection() {
-					vocab.OnActor(act, func(a *vocab.Actor) error {
-						for _, fn := range checkFns {
-							if fn(*a) {
-								found = a
-							}
-						}
+					_ = vocab.OnActor(act, func(a *vocab.Actor) error {
+						found = a
 						return nil
 					})
 				}
@@ -159,11 +84,7 @@ func LoadActor(dbs []Storage, checkFns ...filterActorFn) (vocab.Item, error) {
 			})
 		} else {
 			err = vocab.OnActor(actors, func(a *vocab.Actor) error {
-				for _, fn := range checkFns {
-					if fn(*a) {
-						found = a
-					}
-				}
+				found = a
 				return nil
 			})
 		}
@@ -214,28 +135,24 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 
 	var result vocab.Item
 	if typ == "acct" {
-		a, err := LoadActor(h.s, CheckActorName(handle), CheckActorURL(handle), CheckActorID(handle))
+		a, err := LoadActor(h.s, filters.Any(FilterName(handle), FilterURL(handle), FilterID(handle)))
 		if err != nil {
 			handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
-			return
-		}
-		if a == nil {
-			handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
 			return
 		}
 		result = a
 	}
 	if typ == "https" {
-		ob, err := LoadIRI(h.s, vocab.IRI(res), CheckObjectURL(res), CheckObjectID(res))
+		ob, err := LoadIRI(h.s, vocab.IRI(res), filters.Any(FilterURL(res), FilterID(res)))
 		if err != nil {
 			handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 			return
 		}
-		if ob == nil {
-			handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
-			return
-		}
 		result = ob
+	}
+	if result == nil || vocab.IsNil(result) {
+		handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
+		return
 	}
 
 	id := result.GetID()
@@ -247,20 +164,20 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 			Href: id.String(),
 		},
 	}
-	vocab.OnObject(result, func(ob *vocab.Object) error {
+	_ = vocab.OnObject(result, func(ob *vocab.Object) error {
 		if vocab.IsNil(ob.URL) {
 			return nil
 		}
 		urls := make(vocab.IRIs, 0)
 		if vocab.IsItemCollection(ob.URL) {
-			vocab.OnItemCollection(ob.URL, func(col *vocab.ItemCollection) error {
+			_ = vocab.OnItemCollection(ob.URL, func(col *vocab.ItemCollection) error {
 				for _, it := range col.Collection() {
-					urls.Append(it.GetLink())
+					_ = urls.Append(it.GetLink())
 				}
 				return nil
 			})
 		} else {
-			urls.Append(ob.URL.GetLink())
+			_ = urls.Append(ob.URL.GetLink())
 		}
 
 		for _, u := range urls {
@@ -283,7 +200,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	dat, _ := json.Marshal(wf)
 	w.Header().Set("Content-Type", "application/jrd+json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(dat)
+	_, _ = w.Write(dat)
 	h.l.Debugf("%s %s%s %d %s", r.Method, r.Host, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
 }
 
@@ -304,6 +221,6 @@ func (h handler) HandleHostMeta(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/jrd+json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(dat)
+	_, _ = w.Write(dat)
 	h.l.Debugf("%s %s%s %d %s", r.Method, r.Host, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
 }
