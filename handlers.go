@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"git.sr.ht/~mariusor/lw"
@@ -34,6 +35,9 @@ func FilterName(name string) filters.Check {
 }
 
 func FilterURL(u string) filters.Check {
+	if _, err := url.ParseRequestURI(u); err != nil {
+		u = "https://" + u
+	}
 	return filters.SameURL(vocab.IRI(u))
 }
 
@@ -66,6 +70,10 @@ func LoadActor(dbs []Storage, checkFns ...filters.Check) (vocab.Item, error) {
 	var err error
 
 	for _, db := range dbs {
+		if filters.Any(checkFns...).Match(db.Root) {
+			return db.Root, nil
+		}
+
 		serviceIRI := db.Root.GetLink()
 		inCollection := actors.IRI(serviceIRI)
 		actors, err := db.Load(inCollection, append(checkFns, filters.Authorized(serviceIRI))...)

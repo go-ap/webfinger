@@ -5,7 +5,7 @@ go 1.23
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250114195945-ba9c7bcca3c1
 	git.sr.ht/~mariusor/wrapper v0.0.0-20240519120935-f877e4d97def
-	github.com/alecthomas/kong v1.6.1
+	github.com/alecthomas/kong v1.8.0
 	github.com/go-ap/activitypub v0.0.0-20250124194921-d52b4c694e14
 	github.com/go-ap/errors v0.0.0-20250124135319-3da8adefd4a9
 	github.com/go-ap/filters v0.0.0-20250128143727-4cb9a9d7db48
@@ -31,10 +31,10 @@ require (
 	github.com/go-ap/cache v0.0.0-20250124200926-2c9bbefd884b // indirect
 	github.com/go-ap/client v0.0.0-20250131093345-c5680a9e664b // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
-	github.com/go-chi/chi/v5 v5.2.0 // indirect
+	github.com/go-chi/chi/v5 v5.2.1 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
-	github.com/google/flatbuffers v25.1.24+incompatible // indirect
+	github.com/google/flatbuffers v25.2.10+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jdkato/prose v1.2.1 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
@@ -52,17 +52,17 @@ require (
 	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/valyala/fastjson v1.6.4 // indirect
-	go.etcd.io/bbolt v1.3.11 // indirect
+	go.etcd.io/bbolt v1.4.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c // indirect
-	golang.org/x/net v0.34.0 // indirect
-	golang.org/x/oauth2 v0.25.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
-	google.golang.org/protobuf v1.36.4 // indirect
+	golang.org/x/crypto v0.33.0 // indirect
+	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
+	golang.org/x/net v0.35.0 // indirect
+	golang.org/x/oauth2 v0.26.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
+	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.7 // indirect
-	modernc.org/libc v1.61.10 // indirect
+	modernc.org/libc v1.61.13 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.8.2 // indirect
 	modernc.org/sqlite v1.34.5 // indirect
