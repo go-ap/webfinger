@@ -8,12 +8,12 @@ require (
 	github.com/alecthomas/kong v1.8.0
 	github.com/go-ap/activitypub v0.0.0-20250212090640-aeb6499ba581
 	github.com/go-ap/errors v0.0.0-20250124135319-3da8adefd4a9
-	github.com/go-ap/filters v0.0.0-20250212093317-ca1dc66cad4e
-	github.com/go-ap/processing v0.0.0-20250212093651-88bc82ef9d5a
-	github.com/go-ap/storage-badger v0.0.0-20250131095335-b0e9b472b89a
-	github.com/go-ap/storage-boltdb v0.0.0-20250212094004-0defd92f6bc7
-	github.com/go-ap/storage-fs v0.0.0-20250212093742-49fcfce2ca49
-	github.com/go-ap/storage-sqlite v0.0.0-20250212093827-0f3ae578a436
+	github.com/go-ap/filters v0.0.0-20250215161313-df9d6de7ad5a
+	github.com/go-ap/processing v0.0.0-20250215163048-bb965f7592b5
+	github.com/go-ap/storage-badger v0.0.0-20250215162008-8ac0000c7a0f
+	github.com/go-ap/storage-boltdb v0.0.0-20250215161725-ae9d294b0125
+	github.com/go-ap/storage-fs v0.0.0-20250215161651-b9d27f82cecf
+	github.com/go-ap/storage-sqlite v0.0.0-20250215161714-92c158db98eb
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -28,6 +28,7 @@ require (
 	github.com/dgraph-io/badger/v4 v4.5.1 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/go-ap/auth v0.0.0-20250215161350-61a8ea3adef5 // indirect
 	github.com/go-ap/cache v0.0.0-20250212092834-8063df8eb5ff // indirect
 	github.com/go-ap/client v0.0.0-20250212093435-5abaf05c43c3 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
@@ -65,5 +66,5 @@ require (
 	modernc.org/libc v1.61.13 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.8.2 // indirect
-	modernc.org/sqlite v1.34.5 // indirect
+	modernc.org/sqlite v1.35.0 // indirect
 )
