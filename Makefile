@@ -13,6 +13,7 @@ LDFLAGS ?= -X main.version=$(VERSION)
 BUILDFLAGS ?= -a -ldflags '$(LDFLAGS)'
 TEST_FLAGS ?= -count=1
 
+UPX = upx
 GO ?= go
 APPSOURCES := $(wildcard ./*.go cmd/point/*.go)
 
@@ -23,6 +24,10 @@ endif
 
 export CGO_ENABLED=0
 
+ifneq ($(ENV), dev)
+	LDFLAGS += -s -w -extldflags "-static"
+	BUILDFLAGS += -trimpath
+endif
 ifeq ($(shell git describe --always > /dev/null 2>&1 ; echo $$?), 0)
 	BRANCH=$(shell git rev-parse --abbrev-ref HEAD | tr '/' '-')
 	HASH=$(shell git rev-parse --short HEAD)
@@ -32,10 +37,6 @@ ifeq ($(shell git describe --tags > /dev/null 2>&1 ; echo $$?), 0)
 	VERSION ?= $(shell git describe --tags | tr '/' '-')
 endif
 
-ifneq ($(ENV),dev)
-	LDFLAGS += -s -w -extldflags "-static"
-	BUILDFLAGS += -trimpath
-endif
 
 BUILD := $(GO) build $(BUILDFLAGS)
 TEST := $(GO) test $(BUILDFLAGS)
@@ -53,6 +54,9 @@ go.sum: go.mod
 point: bin/point
 bin/point: go.mod go.sum $(APPSOURCES)
 	$(BUILD) -tags "$(TAGS)" -o $@ ./cmd/point
+ifneq ($(ENV),dev)
+	$(UPX) -q --mono --no-progress --best $@ || true
+endif
 
 run: ./bin/point
 	@./bin/point
