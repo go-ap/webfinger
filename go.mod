@@ -4,16 +4,16 @@ go 1.24.0
 
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
-	git.sr.ht/~mariusor/wrapper v0.0.0-20240519120935-f877e4d97def
+	git.sr.ht/~mariusor/wrapper v0.0.0-20250414202025-7af98c35299c
 	github.com/alecthomas/kong v1.8.0
-	github.com/go-ap/activitypub v0.0.0-20250212090640-aeb6499ba581
-	github.com/go-ap/errors v0.0.0-20250124135319-3da8adefd4a9
-	github.com/go-ap/filters v0.0.0-20250327124545-0df3f4a5cc88
-	github.com/go-ap/processing v0.0.0-20250409115613-771eaed2c86f
-	github.com/go-ap/storage-badger v0.0.0-20250409121531-bf06b1ddb505
-	github.com/go-ap/storage-boltdb v0.0.0-20250409121432-32e01b79d4a6
-	github.com/go-ap/storage-fs v0.0.0-20250409120837-29235afcfdfd
-	github.com/go-ap/storage-sqlite v0.0.0-20250409121004-bc84f8f2b716
+	github.com/go-ap/activitypub v0.0.0-20250409143848-7113328b1f3d
+	github.com/go-ap/errors v0.0.0-20250409143711-5686c11ae650
+	github.com/go-ap/filters v0.0.0-20250409144015-c6cbbadeefe4
+	github.com/go-ap/processing v0.0.0-20250409144309-b7bd9397ac3a
+	github.com/go-ap/storage-badger v0.0.0-20250414181734-3201de95c26d
+	github.com/go-ap/storage-boltdb v0.0.0-20250414181714-e3ec894bf3d4
+	github.com/go-ap/storage-fs v0.0.0-20250414135724-28ce9aff7dd4
+	github.com/go-ap/storage-sqlite v0.0.0-20250414135807-41bb13366a08
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -28,9 +28,9 @@ require (
 	github.com/dgraph-io/badger/v4 v4.7.0 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.2.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/auth v0.0.0-20250409115337-c0396025049e // indirect
-	github.com/go-ap/cache v0.0.0-20250212092834-8063df8eb5ff // indirect
-	github.com/go-ap/client v0.0.0-20250409115134-95ac3dd669c3 // indirect
+	github.com/go-ap/auth v0.0.0-20250409144154-5b90f4f02389 // indirect
+	github.com/go-ap/cache v0.0.0-20250409143941-46ead8c57c50 // indirect
+	github.com/go-ap/client v0.0.0-20250409144111-73642f11a3cf // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
 	github.com/go-chi/chi/v5 v5.2.1 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect

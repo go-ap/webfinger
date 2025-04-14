@@ -16,7 +16,6 @@ import (
 	"github.com/alecthomas/kong"
 	vocab "github.com/go-ap/activitypub"
 	"github.com/go-ap/errors"
-	"github.com/go-ap/processing"
 	"github.com/go-ap/webfinger"
 	"github.com/go-ap/webfinger/internal/config"
 	"github.com/joho/godotenv"
@@ -79,6 +78,12 @@ func main() {
 		l.Errorf("Unable to find any valid storage path")
 		os.Exit(1)
 	}
+
+	defer func() {
+		for _, st := range stores {
+			st.Close()
+		}
+	}()
 
 	m := http.NewServeMux()
 
@@ -164,15 +169,19 @@ func loadStoresFromDSNs(dsns, root []string, env config.Env, l lw.Logger) ([]web
 			errs = append(errs, fmt.Errorf("unable to initialize storage backend [%s]%s: %w", typ, path, err))
 			continue
 		}
-		fs, ok := db.(processing.ReadStore)
+		fs, ok := db.(webfinger.Store)
 		if !ok {
 			errs = append(errs, fmt.Errorf("invalid storage backend %T [%s]%s", db, typ, path))
+			continue
+		}
+		if err = fs.Open(); err != nil {
+			errs = append(errs, fmt.Errorf("unable to open storage backend %T [%s]%s", db, typ, path))
 			continue
 		}
 		for _, iri := range root {
 			if actor, err := db.Load(vocab.IRI(iri)); err == nil {
 				if app, err := vocab.ToActor(actor); err == nil {
-					s := webfinger.Storage{ReadStore: fs, Root: *app}
+					s := webfinger.Storage{Store: fs, Root: *app}
 					stores = append(stores, s)
 				}
 			}
@@ -205,15 +214,19 @@ func loadStoresFromConfigs(paths, root []string, env config.Env, l lw.Logger) ([
 			errs = append(errs, fmt.Errorf("unable to initialize storage backend [%s]%s: %w", st.Type, st.Path, err))
 			continue
 		}
-		fs, ok := db.(processing.ReadStore)
+		fs, ok := db.(webfinger.Store)
 		if !ok {
 			errs = append(errs, fmt.Errorf("invalid storage backend %T [%s]%s", db, st.Type, st.Path))
+			continue
+		}
+		if err = fs.Open(); err != nil {
+			errs = append(errs, fmt.Errorf("unable to open storage backend %T [%s]%s", db, st.Type, st.Path))
 			continue
 		}
 		for _, iri := range root {
 			if actor, err := db.Load(vocab.IRI(iri)); err == nil {
 				if app, err := vocab.ToActor(actor); err == nil {
-					s := webfinger.Storage{ReadStore: fs, Root: *app}
+					s := webfinger.Storage{Store: fs, Root: *app}
 					stores = append(stores, s)
 				}
 			}

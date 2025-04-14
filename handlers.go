@@ -19,8 +19,14 @@ type handler struct {
 	l lw.Logger
 }
 
-type Storage struct {
+type Store interface {
+	Open() error
+	Close()
 	processing.ReadStore
+}
+
+type Storage struct {
+	Store
 	Root vocab.Actor
 }
 
