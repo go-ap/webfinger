@@ -10,10 +10,10 @@ require (
 	github.com/go-ap/errors v0.0.0-20250527110557-c8db454e53fd
 	github.com/go-ap/filters v0.0.0-20250527111509-8ef063ce5449
 	github.com/go-ap/processing v0.0.0-20250618080358-876012eb81d8
-	github.com/go-ap/storage-badger v0.0.0-20250527112556-3b2007cdecbd
-	github.com/go-ap/storage-boltdb v0.0.0-20250527112502-a71bf4942f31
-	github.com/go-ap/storage-fs v0.0.0-20250608153256-d9546abbc2a4
-	github.com/go-ap/storage-sqlite v0.0.0-20250527112531-76fed334328a
+	github.com/go-ap/storage-badger v0.0.0-20250619131731-3bd41a1f3e62
+	github.com/go-ap/storage-boltdb v0.0.0-20250619125512-d998019b7da3
+	github.com/go-ap/storage-fs v0.0.0-20250619141714-38985a9ea4a6
+	github.com/go-ap/storage-sqlite v0.0.0-20250619130004-490b88b4cefe
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -28,7 +28,6 @@ require (
 	github.com/dgraph-io/badger/v4 v4.7.0 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.2.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/auth v0.0.0-20250527112020-6b6fbf0ccd0a // indirect
 	github.com/go-ap/cache v0.0.0-20250527110731-01dd30d088be // indirect
 	github.com/go-ap/client v0.0.0-20250527111551-a90c7d58948f // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
