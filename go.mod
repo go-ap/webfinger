@@ -6,14 +6,14 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
 	git.sr.ht/~mariusor/wrapper v0.0.0-20250504120759-5fa47ac25e08
 	github.com/alecthomas/kong v1.8.0
-	github.com/go-ap/activitypub v0.0.0-20250527110644-1410ed93404d
+	github.com/go-ap/activitypub v0.0.0-20250624113752-67e4989cab6d
 	github.com/go-ap/errors v0.0.0-20250527110557-c8db454e53fd
-	github.com/go-ap/filters v0.0.0-20250527111509-8ef063ce5449
-	github.com/go-ap/processing v0.0.0-20250618080358-876012eb81d8
-	github.com/go-ap/storage-badger v0.0.0-20250619131731-3bd41a1f3e62
-	github.com/go-ap/storage-boltdb v0.0.0-20250619125512-d998019b7da3
-	github.com/go-ap/storage-fs v0.0.0-20250619141714-38985a9ea4a6
-	github.com/go-ap/storage-sqlite v0.0.0-20250619130004-490b88b4cefe
+	github.com/go-ap/filters v0.0.0-20250624114123-8b0381a095ec
+	github.com/go-ap/processing v0.0.0-20250624114437-a999426b2960
+	github.com/go-ap/storage-badger v0.0.0-20250624114709-5bc73d78180d
+	github.com/go-ap/storage-boltdb v0.0.0-20250624114645-470a54ed3a98
+	github.com/go-ap/storage-fs v0.0.0-20250624114544-4880bc1630a9
+	github.com/go-ap/storage-sqlite v0.0.0-20250624114625-1c57b3df4bdb
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -28,10 +28,10 @@ require (
 	github.com/dgraph-io/badger/v4 v4.7.0 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.2.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/cache v0.0.0-20250527110731-01dd30d088be // indirect
-	github.com/go-ap/client v0.0.0-20250527111551-a90c7d58948f // indirect
+	github.com/go-ap/cache v0.0.0-20250624114002-22c47b1ed131 // indirect
+	github.com/go-ap/client v0.0.0-20250624114212-62552fca2801 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
-	github.com/go-chi/chi/v5 v5.2.1 // indirect
+	github.com/go-chi/chi/v5 v5.2.2 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -58,7 +58,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.36.0 // indirect
 	go.opentelemetry.io/otel/trace v1.36.0 // indirect
 	golang.org/x/crypto v0.39.0 // indirect
-	golang.org/x/exp v0.0.0-20250606033433-dcc06ee1d476 // indirect
+	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
 	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
