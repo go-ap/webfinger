@@ -6,14 +6,14 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
 	git.sr.ht/~mariusor/wrapper v0.0.0-20250504120759-5fa47ac25e08
 	github.com/alecthomas/kong v1.8.0
-	github.com/go-ap/activitypub v0.0.0-20250810115208-cb73b20a1742
+	github.com/go-ap/activitypub v0.0.0-20250831121713-4e61cc722305
 	github.com/go-ap/errors v0.0.0-20250527110557-c8db454e53fd
-	github.com/go-ap/filters v0.0.0-20250810115343-b996bd3d3865
-	github.com/go-ap/processing v0.0.0-20250815144424-c60889835717
+	github.com/go-ap/filters v0.0.0-20250831121811-28474286712c
+	github.com/go-ap/processing v0.0.0-20250831122016-84ed74580a15
 	github.com/go-ap/storage-badger v0.0.0-20250810120212-b99839d35d91
-	github.com/go-ap/storage-boltdb v0.0.0-20250813092247-192e973e2a6c
-	github.com/go-ap/storage-fs v0.0.0-20250817093002-ce04c8087791
-	github.com/go-ap/storage-sqlite v0.0.0-20250817100034-6c80714577a3
+	github.com/go-ap/storage-boltdb v0.0.0-20250831122120-14cbe6eb1218
+	github.com/go-ap/storage-fs v0.0.0-20250831122044-423ca5eb7297
+	github.com/go-ap/storage-sqlite v0.0.0-20250831122101-2a6663c85a1b
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -28,10 +28,10 @@ require (
 	github.com/dgraph-io/badger/v4 v4.8.0 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.2.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/cache v0.0.0-20250810115305-0742a12ab1a1 // indirect
-	github.com/go-ap/client v0.0.0-20250810115406-535063f251fa // indirect
+	github.com/go-ap/cache v0.0.0-20250831121752-c44fafe4041e // indirect
+	github.com/go-ap/client v0.0.0-20250831121842-86170bce4a07 // indirect
 	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
-	github.com/go-chi/chi/v5 v5.2.2 // indirect
+	github.com/go-chi/chi/v5 v5.2.3 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -52,20 +52,20 @@ require (
 	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/valyala/fastjson v1.6.4 // indirect
-	go.etcd.io/bbolt v1.4.2 // indirect
+	go.etcd.io/bbolt v1.4.3 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.37.0 // indirect
 	go.opentelemetry.io/otel/metric v1.37.0 // indirect
 	go.opentelemetry.io/otel/trace v1.37.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
-	golang.org/x/exp v0.0.0-20250813145105-42675adae3e6 // indirect
+	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	google.golang.org/protobuf v1.36.7 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.7 // indirect
-	modernc.org/libc v1.66.7 // indirect
+	modernc.org/libc v1.66.8 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.38.2 // indirect
