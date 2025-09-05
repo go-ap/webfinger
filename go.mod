@@ -6,14 +6,14 @@ require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
 	git.sr.ht/~mariusor/wrapper v0.0.0-20250504120759-5fa47ac25e08
 	github.com/alecthomas/kong v1.8.0
-	github.com/go-ap/activitypub v0.0.0-20250831121713-4e61cc722305
-	github.com/go-ap/errors v0.0.0-20250527110557-c8db454e53fd
-	github.com/go-ap/filters v0.0.0-20250901111556-f5075cc1c0c4
-	github.com/go-ap/processing v0.0.0-20250901111706-507a03f35612
-	github.com/go-ap/storage-badger v0.0.0-20250901111811-a400be0e97b6
-	github.com/go-ap/storage-boltdb v0.0.0-20250901111751-376f1767448b
-	github.com/go-ap/storage-fs v0.0.0-20250901111719-3b081b65d37e
-	github.com/go-ap/storage-sqlite v0.0.0-20250901111732-9b9b3c4e587f
+	github.com/go-ap/activitypub v0.0.0-20250905102448-e9df599e4528
+	github.com/go-ap/errors v0.0.0-20250905102357-4480b47a00c4
+	github.com/go-ap/filters v0.0.0-20250905102619-f401bfda17dc
+	github.com/go-ap/processing v0.0.0-20250905111632-bcb8fde5398a
+	github.com/go-ap/storage-badger v0.0.0-20250905112716-ba897bcddb0a
+	github.com/go-ap/storage-boltdb v0.0.0-20250905112506-41f35ea8af60
+	github.com/go-ap/storage-fs v0.0.0-20250905112030-6810f7e5e121
+	github.com/go-ap/storage-sqlite v0.0.0-20250905112304-8ff8491ebe3f
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -28,9 +28,9 @@ require (
 	github.com/dgraph-io/badger/v4 v4.8.0 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.3.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/cache v0.0.0-20250831121752-c44fafe4041e // indirect
-	github.com/go-ap/client v0.0.0-20250831121842-86170bce4a07 // indirect
-	github.com/go-ap/jsonld v0.0.0-20221030091449-f2a191312c73 // indirect
+	github.com/go-ap/cache v0.0.0-20250905102525-152e952d5d86 // indirect
+	github.com/go-ap/client v0.0.0-20250905102653-674f86aded3d // indirect
+	github.com/go-ap/jsonld v0.0.0-20250905102310-8480b0fe24d9 // indirect
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
