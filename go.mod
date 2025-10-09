@@ -9,10 +9,10 @@ require (
 	github.com/go-ap/activitypub v0.0.0-20251007131428-e3b22fbf6257
 	github.com/go-ap/errors v0.0.0-20250905102357-4480b47a00c4
 	github.com/go-ap/filters v0.0.0-20251007131616-3481286d74d2
-	github.com/go-ap/processing v0.0.0-20251007133113-c900268eb454
+	github.com/go-ap/processing v0.0.0-20251009100731-856f4db8c278
 	github.com/go-ap/storage-badger v0.0.0-20251007134309-7d5925a0e403
 	github.com/go-ap/storage-boltdb v0.0.0-20251007134242-7f27b5473da2
-	github.com/go-ap/storage-fs v0.0.0-20251007134150-db59b9f75faa
+	github.com/go-ap/storage-fs v0.0.0-20251008174442-fd182fff43bc
 	github.com/go-ap/storage-sqlite v0.0.0-20251007134217-431d6fcd4f52
 	github.com/joho/godotenv v1.5.1
 )
@@ -44,7 +44,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-sqlite3 v1.14.32 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/ncruces/go-strftime v0.1.9 // indirect
+	github.com/ncruces/go-strftime v1.0.0 // indirect
 	github.com/openshift/osin v1.0.2-0.20220317075346-0f4d38c6e53f // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
@@ -57,12 +57,12 @@ require (
 	go.opentelemetry.io/otel v1.38.0 // indirect
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
-	golang.org/x/crypto v0.42.0 // indirect
+	golang.org/x/crypto v0.43.0 // indirect
 	golang.org/x/exp v0.0.0-20251002181428-27f1f14c8bb9 // indirect
-	golang.org/x/net v0.44.0 // indirect
-	golang.org/x/oauth2 v0.31.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
-	golang.org/x/text v0.29.0 // indirect
+	golang.org/x/net v0.46.0 // indirect
+	golang.org/x/oauth2 v0.32.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.7 // indirect
 	modernc.org/libc v1.66.10 // indirect
