@@ -9,7 +9,7 @@ require (
 	github.com/go-ap/activitypub v0.0.0-20251007131428-e3b22fbf6257
 	github.com/go-ap/errors v0.0.0-20250905102357-4480b47a00c4
 	github.com/go-ap/filters v0.0.0-20251007131616-3481286d74d2
-	github.com/go-ap/processing v0.0.0-20251009100731-856f4db8c278
+	github.com/go-ap/processing v0.0.0-20251014123932-7c801d1f67ec
 	github.com/go-ap/storage-badger v0.0.0-20251007134309-7d5925a0e403
 	github.com/go-ap/storage-boltdb v0.0.0-20251007134242-7f27b5473da2
 	github.com/go-ap/storage-fs v0.0.0-20251008174442-fd182fff43bc
@@ -23,13 +23,13 @@ require (
 	git.sr.ht/~mariusor/mask v0.0.0-20250114195353-98705a6977b7 // indirect
 	git.sr.ht/~mariusor/ssm v0.0.0-20250920150353-cc21fa885fda // indirect
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
-	github.com/bits-and-blooms/bitset v1.24.0 // indirect
+	github.com/bits-and-blooms/bitset v1.24.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgraph-io/badger/v4 v4.8.0 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.3.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ap/cache v0.0.0-20251007131541-7f856f34616b // indirect
-	github.com/go-ap/client v0.0.0-20251007131736-f7a8f55835c9 // indirect
+	github.com/go-ap/client v0.0.0-20251014115429-d8c9aab73d73 // indirect
 	github.com/go-ap/jsonld v0.0.0-20250905102310-8480b0fe24d9 // indirect
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
@@ -58,7 +58,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
 	golang.org/x/crypto v0.43.0 // indirect
-	golang.org/x/exp v0.0.0-20251002181428-27f1f14c8bb9 // indirect
+	golang.org/x/exp v0.0.0-20251009144603-d2f985daa21b // indirect
 	golang.org/x/net v0.46.0 // indirect
 	golang.org/x/oauth2 v0.32.0 // indirect
 	golang.org/x/sys v0.37.0 // indirect
@@ -68,5 +68,5 @@ require (
 	modernc.org/libc v1.66.10 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.39.0 // indirect
+	modernc.org/sqlite v1.39.1 // indirect
 )
