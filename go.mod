@@ -9,7 +9,7 @@ require (
 	github.com/go-ap/activitypub v0.0.0-20251007131428-e3b22fbf6257
 	github.com/go-ap/errors v0.0.0-20250905102357-4480b47a00c4
 	github.com/go-ap/filters v0.0.0-20251007131616-3481286d74d2
-	github.com/go-ap/processing v0.0.0-20251014123932-7c801d1f67ec
+	github.com/go-ap/processing v0.0.0-20251015095030-702415ae9342
 	github.com/go-ap/storage-badger v0.0.0-20251007134309-7d5925a0e403
 	github.com/go-ap/storage-boltdb v0.0.0-20251007134242-7f27b5473da2
 	github.com/go-ap/storage-fs v0.0.0-20251008174442-fd182fff43bc
@@ -29,7 +29,7 @@ require (
 	github.com/dgraph-io/ristretto/v2 v2.3.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ap/cache v0.0.0-20251007131541-7f856f34616b // indirect
-	github.com/go-ap/client v0.0.0-20251014115429-d8c9aab73d73 // indirect
+	github.com/go-ap/client v0.0.0-20251015081206-edd80e9789d4 // indirect
 	github.com/go-ap/jsonld v0.0.0-20250905102310-8480b0fe24d9 // indirect
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
