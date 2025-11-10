@@ -8,12 +8,12 @@ require (
 	github.com/alecthomas/kong v1.8.0
 	github.com/go-ap/activitypub v0.0.0-20251028130710-8bc6217f6c8d
 	github.com/go-ap/errors v0.0.0-20250905102357-4480b47a00c4
-	github.com/go-ap/filters v0.0.0-20251028142811-9b3305faa3cd
-	github.com/go-ap/processing v0.0.0-20251028142716-e33323290dae
-	github.com/go-ap/storage-badger v0.0.0-20251028143046-4a73c88bce09
-	github.com/go-ap/storage-boltdb v0.0.0-20251102162736-613edcbb42af
-	github.com/go-ap/storage-fs v0.0.0-20251102162749-1b45fdcb2173
-	github.com/go-ap/storage-sqlite v0.0.0-20251103140036-7ee2cb1ec369
+	github.com/go-ap/filters v0.0.0-20251107171832-f29304e3da0b
+	github.com/go-ap/processing v0.0.0-20251107183955-5157bcd24a77
+	github.com/go-ap/storage-badger v0.0.0-20251107184448-c82b82ed5b46
+	github.com/go-ap/storage-boltdb v0.0.0-20251107184346-dcd98f6008a8
+	github.com/go-ap/storage-fs v0.0.0-20251107184052-8f100554bbb5
+	github.com/go-ap/storage-sqlite v0.0.0-20251107184234-cfa09baa0850
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -60,8 +60,8 @@ require (
 	golang.org/x/crypto v0.43.0 // indirect
 	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546 // indirect
 	golang.org/x/net v0.46.0 // indirect
-	golang.org/x/oauth2 v0.32.0 // indirect
-	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/oauth2 v0.33.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.7 // indirect
