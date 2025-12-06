@@ -4,7 +4,7 @@ go 1.25
 
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
-	git.sr.ht/~mariusor/storage-all v0.0.0-20251128140259-e6db4ad6002c
+	git.sr.ht/~mariusor/storage-all v0.0.0-20251206143125-f0d54042bca3
 	git.sr.ht/~mariusor/wrapper v0.0.0-20250504120759-5fa47ac25e08
 	github.com/alecthomas/kong v1.12.1
 	github.com/go-ap/activitypub v0.0.0-20251124111637-be8249f2f382
@@ -33,7 +33,7 @@ require (
 	github.com/go-ap/storage-badger v0.0.0-20251204090311-d62f95f2764c // indirect
 	github.com/go-ap/storage-boltdb v0.0.0-20251204085445-7ec283654162 // indirect
 	github.com/go-ap/storage-fs v0.0.0-20251201152832-229f6028fb90 // indirect
-	github.com/go-ap/storage-sqlite v0.0.0-20251204164012-624c900ffa42 // indirect
+	github.com/go-ap/storage-sqlite v0.0.0-20251206142030-0c105a3bb9bb // indirect
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
