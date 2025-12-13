@@ -1,10 +1,9 @@
 image: archlinux
 packages:
-  - go
   - podman
   - buildah
   - passt
-  - aardvark-dns
+  - go
 sources:
   - https://github.com/go-ap/webfinger
 secrets:
@@ -28,9 +27,12 @@ tasks:
       git remote add hub git@github.com:go-ap/webfinger
       git push hub --force --all
   - images: |
+      test ${BUILD_SUBMITTER} != "git.sr.ht" && complete-build
       set -a +x
       source ~/.buildah.env
 
+      cd webfinger || exit
+      make download
       _user=$(id -un)
 
       echo 'unqualified-search-registries = ["docker.io"]' | sudo tee /etc/containers/registries.conf.d/unq-search.conf
@@ -41,16 +43,14 @@ tasks:
       podman login -u="${BUILDAH_USER}" -p="${BUILDAH_SECRET}" quay.io
 
       set --
-      cd webfinger || exit
 
       _sha=$(git rev-parse --short HEAD)
       _branch=$(git branch --points-at=${_sha} | tail -n1 | tr -d '* ')
       _version=$(printf "%s-%s" "${_branch}" "${_sha}")
 
-      make -C images cert builder
       _push() {
         _storage=${1:-all}
-        make -C images STORAGE="${_storage}" VERSION="${_version}" ENV=dev push
+        make -C images STORAGE="${_storage}" ENV=dev VERSION="${_version}" push
 
         if [ "${_branch}" = "master" ]; then
             make -C images STORAGE="${_storage}" ENV=qa VERSION="${_version}" push
@@ -63,8 +63,6 @@ tasks:
       }
       _push
       _push fs
-      complete-build
-      # I guess I don't need everything while we're in heavy development
       _push sqlite
       _push boltdb
       _push badger
