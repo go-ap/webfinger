@@ -62,7 +62,7 @@ tasks:
         fi
       }
       _push
-      _push fs
-      _push sqlite
-      _push boltdb
-      _push badger
+      #_push fs
+      #_push sqlite
+      #_push boltdb
+      #_push badger
