@@ -17,12 +17,12 @@ import (
 //
 // https://datatracker.ietf.org/doc/html/rfc8414#section-3.2
 type OAuthAuthorizationMetadata struct {
-	Issuer                                     vocab.IRI                `json:"issuer"`
-	AuthorizationEndpoint                      vocab.IRI                `json:"authorization_endpoint"`
-	TokenEndpoint                              vocab.IRI                `json:"token_endpoint"`
+	Issuer                                     string                   `json:"issuer"`
+	AuthorizationEndpoint                      string                   `json:"authorization_endpoint"`
+	TokenEndpoint                              string                   `json:"token_endpoint"`
 	TokenEndpointAuthMethodsSupported          []string                 `json:"token_endpoint_auth_methods_supported,omitempty"`
 	TokenEndpointAuthSigningAlgValuesSupported []string                 `json:"token_endpoint_auth_signing_alg_values_supported,omitempty"`
-	RegistrationEndpoint                       vocab.IRI                `json:"registration_endpoint"`
+	RegistrationEndpoint                       string                   `json:"registration_endpoint"`
 	GrantTypesSupported                        []osin.AccessRequestType `json:"grant_types_supported,omitempty"`
 	ScopesSupported                            []string                 `json:"scopes_supported,omitempty"`
 	ResponseTypesSupported                     []string                 `json:"response_types_supported,omitempty"`
@@ -46,13 +46,17 @@ func issuerIRIFromRequest(req *http.Request) vocab.IRI {
 	return vocab.IRI(maybeActorURI)
 }
 
-func clientRegistrationIRI(self vocab.Actor) vocab.IRI {
+func clientRegistrationIRI(self vocab.Actor) string {
+	fallBack := self.ID.AddPath("oauth/client").String()
+	if self.Endpoints == nil || vocab.IsNil(self.Endpoints.OauthTokenEndpoint) {
+		return fallBack
+	}
 	tokURL, err := self.Endpoints.OauthTokenEndpoint.GetID().URL()
 	if err != nil {
-		return self.ID.AddPath("oauth/client")
+		return fallBack
 	}
 	tokURL.Path = filepath.Join(filepath.Dir(tokURL.Path), "client")
-	return vocab.IRI(tokURL.String())
+	return tokURL.String()
 }
 
 // HandleOAuthAuthorizationServer serves /.well-known/oauth-authorization-server
@@ -73,9 +77,7 @@ func (h handler) HandleOAuthAuthorizationServer(w http.ResponseWriter, r *http.R
 		return
 	}
 	meta := OAuthAuthorizationMetadata{
-		Issuer:                            self.ID,
-		AuthorizationEndpoint:             self.Endpoints.OauthAuthorizationEndpoint.GetID(),
-		TokenEndpoint:                     self.Endpoints.OauthTokenEndpoint.GetID(),
+		Issuer:                            self.ID.String(),
 		GrantTypesSupported:               defaultGrantTypes(),
 		TokenEndpointAuthMethodsSupported: []string{"client_secret_basic"},
 		// NOTE(marius): This URL is not handled by us, as it's related to the OAuth2 authorization flow.
@@ -84,6 +86,20 @@ func (h handler) HandleOAuthAuthorizationServer(w http.ResponseWriter, r *http.R
 		RegistrationEndpoint:                       clientRegistrationIRI(*self),
 		TokenEndpointAuthSigningAlgValuesSupported: []string{},
 		ResponseTypesSupported:                     nil,
+	}
+	if self.Endpoints != nil {
+		if !vocab.IsNil(self.Endpoints.OauthAuthorizationEndpoint) {
+			meta.AuthorizationEndpoint = self.Endpoints.OauthAuthorizationEndpoint.GetID().String()
+		}
+		if !vocab.IsNil(self.Endpoints.OauthTokenEndpoint) {
+			meta.TokenEndpoint = self.Endpoints.OauthTokenEndpoint.GetID().String()
+		}
+	}
+	if meta.AuthorizationEndpoint == "" {
+		meta.AuthorizationEndpoint = self.ID.AddPath("oauth/authorize").String()
+	}
+	if meta.TokenEndpoint == "" {
+		meta.TokenEndpoint = self.ID.AddPath("oauth/token").String()
 	}
 	data, _ := json.Marshal(meta)
 
