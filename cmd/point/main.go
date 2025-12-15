@@ -95,8 +95,10 @@ func main() {
 	}
 	l = l.WithContext(logCtx)
 
-	m.HandleFunc("/.well-known/webfinger", h.HandleWebFinger)
-	m.HandleFunc("/.well-known/host-meta", h.HandleHostMeta)
+	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath, h.HandleOAuthAuthorizationServer)
+	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath+"/", h.HandleOAuthAuthorizationServer)
+	m.HandleFunc(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
+	m.HandleFunc(webfinger.WellKnownHostPath, h.HandleHostMeta)
 
 	setters := []w.SetFn{w.Handler(m)}
 

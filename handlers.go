@@ -116,6 +116,8 @@ func handleErr(l lw.Logger) func(r *http.Request, e error) errors.ErrorHandlerFn
 	}
 }
 
+const WellKnownWebFingerPath = "/.well-known/webfinger"
+
 // HandleWebFinger serves /.well-known/webfinger/
 func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	res := r.URL.Query().Get("resource")
@@ -217,6 +219,8 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(dat)
 	h.l.Debugf("%s %s%s %d %s", r.Method, r.Host, r.RequestURI, http.StatusOK, http.StatusText(http.StatusOK))
 }
+
+const WellKnownHostPath = "/.well-known/host-meta"
 
 // HandleHostMeta serves /.well-known/host-meta
 func (h handler) HandleHostMeta(w http.ResponseWriter, r *http.Request) {
