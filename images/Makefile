@@ -36,7 +36,7 @@ push: build
 	$(TAG_CMD) "$(APP_HOSTNAME)/app:$(TAG)" "quay.io/go-ap/point:$(TAG)"
 	$(PUSH_CMD) "quay.io/go-ap/point:$(TAG)"
 ifeq ($(TAG),dev)
-	$(TAG_CMD) "$(APP_HOSTNAME)/app:$(TAG) "quay.io/go-ap/point:latest" || true
+	$(TAG_CMD) "$(APP_HOSTNAME)/app:$(TAG)" "quay.io/go-ap/point:latest" || true
 	$(PUSH_CMD) "quay.io/go-ap/point:latest" || true
 endif
 ifneq ($(VERSION),HEAD)
