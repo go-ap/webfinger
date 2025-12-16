@@ -12,7 +12,7 @@ require (
 	github.com/go-ap/authorize v0.0.0-20251110194816-b9adbb16263c
 	github.com/go-ap/errors v0.0.0-20250905102357-4480b47a00c4
 	github.com/go-ap/filters v0.0.0-20251215103009-83db92ca9d83
-	github.com/go-ap/processing v0.0.0-20251215103356-a4358ebe99a2
+	github.com/go-ap/processing v0.0.0-20251216153824-67feea4fa190
 	github.com/joho/godotenv v1.5.1
 	github.com/openshift/osin v1.0.2-0.20220317075346-0f4d38c6e53f
 )
