@@ -134,17 +134,17 @@ func main() {
 		syscall.SIGINT: func(exit chan<- error) {
 			l.Infof("SIGINT received, stopping")
 			cancelFn()
-			exit <- nil
+			exit <- w.Interrupt
 		},
 		syscall.SIGTERM: func(exit chan<- error) {
 			l.Infof("SIGTERM received, force stopping")
 			cancelFn()
-			exit <- nil
+			exit <- w.Interrupt
 		},
 		syscall.SIGQUIT: func(exit chan<- error) {
 			l.Infof("SIGQUIT received, force stopping with core-dump")
 			cancelFn()
-			exit <- nil
+			exit <- w.Interrupt
 		},
 	}).Exec(ctx, srvRun)
 
