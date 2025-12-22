@@ -41,7 +41,7 @@ func defaultGrantTypes() []osin.AccessRequestType {
 
 const WellKnownOAuthAuthorizationServerPath = "/.well-known/oauth-authorization-server"
 
-func issuerIRIFromRequest(req *http.Request) vocab.IRI {
+func issuerIRIFromOAuthAuthorizationRequest(req *http.Request) vocab.IRI {
 	maybeActorURI := "https://" + req.Host + strings.Replace(req.RequestURI, WellKnownOAuthAuthorizationServerPath, "", 1)
 	return vocab.IRI(maybeActorURI)
 }
@@ -61,12 +61,12 @@ func clientRegistrationIRI(self vocab.Actor) string {
 
 // HandleOAuthAuthorizationServer serves /.well-known/oauth-authorization-server
 func (h handler) HandleOAuthAuthorizationServer(w http.ResponseWriter, r *http.Request) {
-	maybeActor, err := LoadActor(h.s, filters.SameID(issuerIRIFromRequest(r)))
+	maybeActor, err := LoadActor(h.s, filters.SameID(issuerIRIFromOAuthAuthorizationRequest(r)))
 	if err != nil {
-		handleErr(h.l)(r, errors.Annotatef(err, "unable to determine issuer")).ServeHTTP(w, r)
+		handleErr(h.l)(r, errors.Annotatef(err, "unable to find actor")).ServeHTTP(w, r)
 		return
 	}
-	if auth.AnonymousActor.Equals(maybeActor) {
+	if vocab.IsNil(maybeActor) || auth.AnonymousActor.Equals(maybeActor) {
 		handleErr(h.l)(r, errors.NotFoundf("issuer not found")).ServeHTTP(w, r)
 		return
 	}
@@ -77,7 +77,7 @@ func (h handler) HandleOAuthAuthorizationServer(w http.ResponseWriter, r *http.R
 		return
 	}
 	meta := OAuthAuthorizationMetadata{
-		Issuer:                            self.ID.String(),
+		Issuer:                            string(self.ID),
 		GrantTypesSupported:               defaultGrantTypes(),
 		TokenEndpointAuthMethodsSupported: []string{"client_secret_basic"},
 		// NOTE(marius): This URL is not handled by us, as it's related to the OAuth2 authorization flow.
