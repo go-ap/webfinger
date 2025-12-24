@@ -37,6 +37,8 @@ var defaultTimeout = time.Second * 10
 
 var version = "HEAD"
 
+const defaultGraceWait = 1500 * time.Millisecond
+
 func main() {
 	ktx := kong.Parse(
 		&Point,
@@ -100,7 +102,7 @@ func main() {
 	m.HandleFunc(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
 	m.HandleFunc(webfinger.WellKnownHostPath, h.HandleHostMeta)
 
-	setters := []w.SetFn{w.Handler(m)}
+	setters := []w.SetFn{w.Handler(m), w.GracefulWait(defaultGraceWait)}
 
 	if len(Point.CertPath)+len(Point.KeyPath) > 0 {
 		setters = append(setters, w.WithTLSCert(Point.CertPath, Point.KeyPath))
@@ -115,43 +117,46 @@ func main() {
 		setters = append(setters, w.OnTCP(Point.ListenOn))
 	}
 
-	ctx, cancelFn := context.WithTimeout(context.TODO(), defaultTimeout)
+	ctx, cancelFn := context.WithCancel(context.TODO())
+	defer cancelFn()
 
 	// Get start/stop functions for the http server
 	srvRun, srvStop := w.HttpServer(setters...)
-	l.Infof("Listening for webfinger requests")
-	stopFn := func() {
-		if err := srvStop(ctx); err != nil {
-			l.Errorf("%+v", err)
+	stopFn := func(ctx context.Context) error {
+		l.Infof("Shutting down")
+		for _, st := range stores {
+			st.Close()
 		}
+		return srvStop(ctx)
 	}
-	defer stopFn()
 
+	exitWithErrOrInterrupt := func(err error, exit chan<- error) {
+		if err == nil {
+			err = w.Interrupt
+		}
+		exit <- err
+	}
+
+	l.Infof("Listening for .well-known requests")
 	err = w.RegisterSignalHandlers(w.SignalHandlers{
 		syscall.SIGHUP: func(_ chan<- error) {
-			l.Infof("SIGHUP received, reloading configuration")
+			l.Debugf("SIGHUP received, reloading configuration")
 		},
 		syscall.SIGINT: func(exit chan<- error) {
-			l.Infof("SIGINT received, stopping")
-			cancelFn()
-			stopFn()
-			exit <- w.Interrupt
+			l.WithContext(lw.Ctx{"wait": defaultGraceWait}).Infof("SIGINT received, stopping")
+			exitWithErrOrInterrupt(stopFn(ctx), exit)
 		},
 		syscall.SIGTERM: func(exit chan<- error) {
-			l.Infof("SIGTERM received, force stopping")
-			cancelFn()
-			stopFn()
-			exit <- w.Interrupt
+			l.WithContext(lw.Ctx{"wait": defaultGraceWait}).Infof("SIGTERM received, force stopping")
+			exitWithErrOrInterrupt(stopFn(ctx), exit)
 		},
 		syscall.SIGQUIT: func(exit chan<- error) {
-			l.Infof("SIGQUIT received, force stopping with core-dump")
+			l.Infof("SIGQUIT received, ungraceful force stopping")
 			cancelFn()
-			stopFn()
-			exit <- w.Interrupt
+			exitWithErrOrInterrupt(stopFn(ctx), exit)
 		},
 	}).Exec(ctx, srvRun)
 
-	l.Infof("Shutting down")
 	if err != nil {
 		l.Errorf("Error: %+s", err)
 		ktx.Exit(1)
