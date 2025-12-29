@@ -51,9 +51,9 @@ func main() {
 	env := config.DEV
 	if config.ValidEnv(Point.Env) {
 		env = config.Env(Point.Env)
-	} else {
-		errors.IncludeBacktrace = false
 	}
+
+	errors.SetIncludeBacktrace(!env.IsProd())
 
 	if build, ok := debug.ReadBuildInfo(); ok && version == "HEAD" && build.Main.Version != "(devel)" {
 		version = build.Main.Version
