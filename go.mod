@@ -36,6 +36,7 @@ require (
 	github.com/go-ap/storage-fs v0.0.0-20260102113726-6d94ccf75406 // indirect
 	github.com/go-ap/storage-sqlite v0.0.0-20260102121418-4baf35f75d8a // indirect
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
+	github.com/go-chi/cors v1.2.2 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

@@ -18,6 +18,7 @@ import (
 	"github.com/go-ap/errors"
 	"github.com/go-ap/webfinger"
 	"github.com/go-ap/webfinger/internal/config"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -97,8 +98,21 @@ func main() {
 	}
 	l = l.WithContext(logCtx)
 
-	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath, h.HandleOAuthAuthorizationServer)
-	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath+"/", h.HandleOAuthAuthorizationServer)
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"https://*"},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+		MaxAge:           int(time.Hour.Seconds()),
+	})
+	c.Log = corsLogger(l.WithContext(lw.Ctx{"log": "cors"}).Tracef)
+
+	wrappedHandler := func(next func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+		return c.Handler(http.HandlerFunc(next)).ServeHTTP
+	}
+
+	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath, wrappedHandler(h.HandleOAuthAuthorizationServer))
+	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath+"/", wrappedHandler(h.HandleOAuthAuthorizationServer))
 	m.HandleFunc(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
 	m.HandleFunc(webfinger.WellKnownHostPath, h.HandleHostMeta)
 
@@ -200,6 +214,12 @@ func loadStoresFromDSNs(dsns, root []string, env config.Env, l lw.Logger) ([]web
 		}
 	}
 	return stores, errors.Join(errs...)
+}
+
+type corsLogger func(string, ...any)
+
+func (c corsLogger) Printf(f string, v ...interface{}) {
+	c(f, v...)
 }
 
 func loadStoresFromConfigs(paths, root []string, env config.Env, l lw.Logger) ([]webfinger.Storage, error) {
