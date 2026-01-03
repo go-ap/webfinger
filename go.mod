@@ -13,6 +13,8 @@ require (
 	github.com/go-ap/errors v0.0.0-20251229095444-2702aa2d8569
 	github.com/go-ap/filters v0.0.0-20260102113139-8ad00475b09e
 	github.com/go-ap/processing v0.0.0-20260102113618-83e5c1da3baf
+	github.com/go-chi/chi/v5 v5.2.3
+	github.com/go-chi/cors v1.2.2
 	github.com/joho/godotenv v1.5.1
 	github.com/openshift/osin v1.0.2-0.20220317075346-0f4d38c6e53f
 )
@@ -35,8 +37,6 @@ require (
 	github.com/go-ap/storage-boltdb v0.0.0-20260102114123-757dc56b2df9 // indirect
 	github.com/go-ap/storage-fs v0.0.0-20260102113726-6d94ccf75406 // indirect
 	github.com/go-ap/storage-sqlite v0.0.0-20260102121418-4baf35f75d8a // indirect
-	github.com/go-chi/chi/v5 v5.2.3 // indirect
-	github.com/go-chi/cors v1.2.2 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

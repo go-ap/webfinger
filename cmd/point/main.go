@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime/debug"
@@ -18,6 +17,7 @@ import (
 	"github.com/go-ap/errors"
 	"github.com/go-ap/webfinger"
 	"github.com/go-ap/webfinger/internal/config"
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 )
@@ -88,7 +88,7 @@ func main() {
 		}
 	}()
 
-	m := http.NewServeMux()
+	m := chi.NewMux()
 
 	h := webfinger.New(l, stores...)
 
@@ -98,8 +98,12 @@ func main() {
 	}
 	l = l.WithContext(logCtx)
 
+	allowedOrigins := []string{"https://*"}
+	if !env.IsProd() {
+		allowedOrigins = append(allowedOrigins, "http://*")
+	}
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://*"},
+		AllowedOrigins:   allowedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
@@ -107,14 +111,13 @@ func main() {
 	})
 	c.Log = corsLogger(l.WithContext(lw.Ctx{"log": "cors"}).Tracef)
 
-	wrappedHandler := func(next func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
-		return c.Handler(http.HandlerFunc(next)).ServeHTTP
-	}
-
-	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath, wrappedHandler(h.HandleOAuthAuthorizationServer))
-	m.HandleFunc(webfinger.WellKnownOAuthAuthorizationServerPath+"/", wrappedHandler(h.HandleOAuthAuthorizationServer))
-	m.HandleFunc(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
-	m.HandleFunc(webfinger.WellKnownHostPath, h.HandleHostMeta)
+	m.Group(func(m chi.Router) {
+		m.Use(c.Handler)
+		m.Get(webfinger.WellKnownOAuthAuthorizationServerPath, h.HandleOAuthAuthorizationServer)
+		m.Get(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
+		m.Get(webfinger.WellKnownHostPath, h.HandleHostMeta)
+	})
+	m.NotFound(errors.NotFound.ServeHTTP)
 
 	setters := []w.SetFn{w.Handler(m), w.GracefulWait(defaultGraceWait)}
 
