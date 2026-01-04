@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"git.sr.ht/~mariusor/lw"
+	m "git.sr.ht/~mariusor/servermux"
 	w "git.sr.ht/~mariusor/wrapper"
 	"github.com/alecthomas/kong"
 	vocab "github.com/go-ap/activitypub"
@@ -88,7 +89,7 @@ func main() {
 		}
 	}()
 
-	m := chi.NewMux()
+	r := chi.NewMux()
 
 	h := webfinger.New(l, stores...)
 
@@ -111,40 +112,46 @@ func main() {
 	})
 	c.Log = corsLogger(l.WithContext(lw.Ctx{"log": "cors"}).Tracef)
 
-	m.Group(func(m chi.Router) {
+	r.Group(func(m chi.Router) {
 		m.Use(c.Handler)
 		m.Get(webfinger.WellKnownOAuthAuthorizationServerPath, h.HandleOAuthAuthorizationServer)
 		m.Get(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
 		m.Get(webfinger.WellKnownHostPath, h.HandleHostMeta)
 	})
-	m.NotFound(errors.NotFound.ServeHTTP)
+	r.NotFound(errors.NotFound.ServeHTTP)
 
-	setters := []w.SetFn{w.Handler(m), w.GracefulWait(defaultGraceWait)}
+	setters := []m.SetFn{m.Handler(r)}
 
 	if len(Point.CertPath)+len(Point.KeyPath) > 0 {
-		setters = append(setters, w.WithTLSCert(Point.CertPath, Point.KeyPath))
+		setters = append(setters, m.WithTLSCert(Point.CertPath, Point.KeyPath))
 	}
 	dir, _ := filepath.Split(Point.ListenOn)
 	if Point.ListenOn == "systemd" {
-		setters = append(setters, w.OnSystemd())
+		setters = append(setters, m.OnSystemd())
 	} else if _, err := os.Stat(dir); err == nil {
-		setters = append(setters, w.OnSocket(Point.ListenOn))
+		setters = append(setters, m.OnSocket(Point.ListenOn))
 		defer func() { os.RemoveAll(Point.ListenOn) }()
 	} else {
-		setters = append(setters, w.OnTCP(Point.ListenOn))
+		setters = append(setters, m.OnTCP(Point.ListenOn))
 	}
 
 	ctx, cancelFn := context.WithCancel(context.TODO())
 	defer cancelFn()
 
 	// Get start/stop functions for the http server
-	srvRun, srvStop := w.HttpServer(setters...)
+	httpSrv, err := m.HttpServer(setters...)
+	if err != nil {
+		l.WithContext(lw.Ctx{"err": err}).Errorf("Failed to initialize HTTP server")
+		ktx.Exit(1)
+	}
+
+	mux, err := m.Mux(m.WithServer(httpSrv), m.GracefulWait(defaultGraceWait))
 	stopFn := func(ctx context.Context) error {
 		l.Infof("Shutting down")
 		for _, st := range stores {
 			st.Close()
 		}
-		return srvStop(ctx)
+		return httpSrv.Stop(ctx)
 	}
 
 	exitWithErrOrInterrupt := func(err error, exit chan<- error) {
@@ -172,10 +179,10 @@ func main() {
 			cancelFn()
 			exitWithErrOrInterrupt(stopFn(ctx), exit)
 		},
-	}).Exec(ctx, srvRun)
+	}).Exec(ctx, mux.Start)
 
 	if err != nil {
-		l.Errorf("Error: %+s", err)
+		l.WithContext(lw.Ctx{"err": err}).Errorf("Failed")
 		ktx.Exit(1)
 	}
 
