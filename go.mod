@@ -9,8 +9,8 @@ require (
 	git.sr.ht/~mariusor/wrapper v0.0.0-20260103185140-9873830de009
 	github.com/alecthomas/kong v1.12.1
 	github.com/go-ap/activitypub v0.0.0-20260102112410-54375d828154
-	github.com/go-ap/auth v0.0.0-20260102113527-7eacd35a8b49
-	github.com/go-ap/authorize v0.0.0-20260106170445-5586f421b79f
+	github.com/go-ap/auth v0.0.0-20260109092107-38c0f9cf6659
+	github.com/go-ap/authorize v0.0.0-20260109092640-2925e996a1a9
 	github.com/go-ap/errors v0.0.0-20251229095444-2702aa2d8569
 	github.com/go-ap/filters v0.0.0-20260102113139-8ad00475b09e
 	github.com/go-ap/processing v0.0.0-20260107160342-39d0c0ea7a97
@@ -102,5 +102,5 @@ require (
 	modernc.org/libc v1.67.4 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.42.2 // indirect
+	modernc.org/sqlite v1.43.0 // indirect
 )
