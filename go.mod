@@ -9,8 +9,8 @@ require (
 	git.sr.ht/~mariusor/wrapper v0.0.0-20260103185140-9873830de009
 	github.com/alecthomas/kong v1.12.1
 	github.com/go-ap/activitypub v0.0.0-20260115142526-c0e6aa6744cc
-	github.com/go-ap/auth v0.0.0-20260115142916-44886cbbc56c
-	github.com/go-ap/authorize v0.0.0-20260121104513-0fcf0407689c
+	github.com/go-ap/auth v0.0.0-20260121160330-c70f82f1d4bb
+	github.com/go-ap/authorize v0.0.0-20260121160815-c3ddc263dcbd
 	github.com/go-ap/errors v0.0.0-20251229095444-2702aa2d8569
 	github.com/go-ap/filters v0.0.0-20260115142717-20ef6131898d
 	github.com/go-ap/processing v0.0.0-20260115142936-f2dd875a68ff
