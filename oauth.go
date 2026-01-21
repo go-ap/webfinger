@@ -16,6 +16,11 @@ import (
 // OAuthAuthorizationMetadata is the metadata returned by RFC8414 well known oauth-authorization-server end-point
 //
 // https://datatracker.ietf.org/doc/html/rfc8414#section-3.2
+//
+// Additionally we have added the "client_id_metadata_document_supported" field from the
+// OAuth2 Client ID Metadata Document to let OAuth2 clients know that the mechanism is indeed supported.
+//
+// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00#name-authorization-server-metada
 type OAuthAuthorizationMetadata struct {
 	Issuer                                     string                   `json:"issuer"`
 	AuthorizationEndpoint                      string                   `json:"authorization_endpoint"`
@@ -26,6 +31,7 @@ type OAuthAuthorizationMetadata struct {
 	GrantTypesSupported                        []osin.AccessRequestType `json:"grant_types_supported,omitempty"`
 	ScopesSupported                            []string                 `json:"scopes_supported,omitempty"`
 	ResponseTypesSupported                     []string                 `json:"response_types_supported,omitempty"`
+	ClientIDMetadataDocumentSupported          bool                     `json:"client_id_metadata_document_supported"`
 }
 
 func defaultGrantTypes() []osin.AccessRequestType {
@@ -80,12 +86,16 @@ func (h handler) HandleOAuthAuthorizationServer(w http.ResponseWriter, r *http.R
 		Issuer:                            string(self.ID),
 		GrantTypesSupported:               defaultGrantTypes(),
 		TokenEndpointAuthMethodsSupported: []string{"client_secret_basic"},
-		// NOTE(marius): This URL is not handled by us, as it's related to the OAuth2 authorization flow.
-		// It is exposed by the git.sr.ht/~mariusor/authorize service.
-		// TODO(marius): find a way to unify the way we generate this IRI
-		RegistrationEndpoint:                       clientRegistrationIRI(*self),
 		TokenEndpointAuthSigningAlgValuesSupported: []string{},
 		ResponseTypesSupported:                     nil,
+		// TODO(marius): find a way to unify the way we generate these two values
+		// NOTE(marius): This URL is not handled by us, as it's related to the OAuth2 authorization flow.
+		// It is exposed by the git.sr.ht/~mariusor/authorize service.
+		RegistrationEndpoint: clientRegistrationIRI(*self),
+		// NOTE(marius): As above, the support for ClientID Metadata Document is actually part of
+		// the git.sr.ht/~mariusor/authorize service, and this "true" value might be invalid if the service
+		// is older than commit 72a4ad6fd74b58f8cf9961d380aab237e80219e8, or another implementation.
+		ClientIDMetadataDocumentSupported: true,
 	}
 	if self.Endpoints != nil {
 		if !vocab.IsNil(self.Endpoints.OauthAuthorizationEndpoint) {
