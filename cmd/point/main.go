@@ -115,6 +115,7 @@ func main() {
 	r.Group(func(m chi.Router) {
 		m.Use(c.Handler)
 		m.Get(webfinger.WellKnownOAuthAuthorizationServerPath, h.HandleOAuthAuthorizationServer)
+		m.Get(webfinger.WellKnownOAuthAuthorizationServerPath+"/*", h.HandleOAuthAuthorizationServer)
 		m.Get(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
 		m.Get(webfinger.WellKnownHostPath, h.HandleHostMeta)
 	})
