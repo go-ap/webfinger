@@ -32,6 +32,8 @@ type OAuthAuthorizationMetadata struct {
 	ScopesSupported                            []string                 `json:"scopes_supported,omitempty"`
 	ResponseTypesSupported                     []string                 `json:"response_types_supported,omitempty"`
 	ClientIDMetadataDocumentSupported          bool                     `json:"client_id_metadata_document_supported"`
+	ServiceDocumentation                       string                   `json:"service_documentation,omitempty"`
+	CodeChallengeMethodsSupported              []string                 `json:"code_challenge_methods_supported,omitempty"`
 }
 
 func defaultGrantTypes() []osin.AccessRequestType {
@@ -96,6 +98,7 @@ func (h handler) HandleOAuthAuthorizationServer(w http.ResponseWriter, r *http.R
 		// the git.sr.ht/~mariusor/authorize service, and this "true" value might be invalid if the service
 		// is older than commit 72a4ad6fd74b58f8cf9961d380aab237e80219e8, or another implementation.
 		ClientIDMetadataDocumentSupported: true,
+		CodeChallengeMethodsSupported:     []string{"S256"},
 	}
 	if self.Endpoints != nil {
 		if !vocab.IsNil(self.Endpoints.OauthAuthorizationEndpoint) {
