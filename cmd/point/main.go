@@ -48,6 +48,7 @@ func main() {
 		kong.Vars{
 			"env_types":   strings.Join([]string{string(config.DEV), string(config.PROD)}, ", "),
 			"default_env": string(config.DEV),
+			"version":     webfinger.Version,
 		},
 	)
 	env := config.DEV
@@ -82,6 +83,7 @@ func main() {
 		l.Errorf("Unable to find any valid storage path")
 		os.Exit(1)
 	}
+	webfinger.Version = version
 
 	defer func() {
 		for _, st := range stores {
@@ -94,7 +96,7 @@ func main() {
 	h := webfinger.New(l, stores...)
 
 	logCtx := lw.Ctx{
-		"version":  version,
+		"version":  webfinger.Version,
 		"listenOn": Point.ListenOn,
 	}
 	l = l.WithContext(logCtx)
@@ -118,6 +120,9 @@ func main() {
 		m.Get(webfinger.WellKnownOAuthAuthorizationServerPath+"/*", h.HandleOAuthAuthorizationServer)
 		m.Get(webfinger.WellKnownWebFingerPath, h.HandleWebFinger)
 		m.Get(webfinger.WellKnownHostPath, h.HandleHostMeta)
+
+		m.HandleFunc(webfinger.NodeInfoDiscoverPath, h.NodeInfoDiscover)
+		m.HandleFunc(webfinger.NodeInfoPath, h.NodeInfo)
 	})
 	r.NotFound(errors.NotFound.ServeHTTP)
 
