@@ -1,11 +1,11 @@
 module github.com/go-ap/webfinger
 
-go 1.25.0
+go 1.25.8
 
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
 	git.sr.ht/~mariusor/servermux v0.0.0-20260310142041-b6c9be7e7820
-	git.sr.ht/~mariusor/storage-all v0.0.0-20260314173809-5b4a674da06f
+	git.sr.ht/~mariusor/storage-all v0.0.0-20260317102410-3111f77e10db
 	git.sr.ht/~mariusor/wrapper v0.0.0-20260103185140-9873830de009
 	github.com/alecthomas/kong v1.12.1
 	github.com/go-ap/activitypub v0.0.0-20260314162927-f37166117816
@@ -37,7 +37,7 @@ require (
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/keygen v0.5.4 // indirect
 	github.com/charmbracelet/ssh v0.0.0-20250826160808-ebfa259c7309 // indirect
-	github.com/charmbracelet/ultraviolet v0.0.0-20260309091805-903bfd0cf188 // indirect
+	github.com/charmbracelet/ultraviolet v0.0.0-20260316091819-b93f6a3b8502 // indirect
 	github.com/charmbracelet/x/ansi v0.11.6 // indirect
 	github.com/charmbracelet/x/conpty v0.2.0 // indirect
 	github.com/charmbracelet/x/term v0.2.2 // indirect
@@ -54,10 +54,10 @@ require (
 	github.com/go-ap/client v0.0.0-20260314172213-e86ab32299ee // indirect
 	github.com/go-ap/jsonld v0.0.0-20251216162253-e38fa664ea77 // indirect
 	github.com/go-ap/processing v0.0.0-20260314172430-abaa6f90b7f1 // indirect
-	github.com/go-ap/storage-badger v0.0.0-20260314173226-63551d805f30 // indirect
-	github.com/go-ap/storage-boltdb v0.0.0-20260314173054-2fe88545669f // indirect
-	github.com/go-ap/storage-fs v0.0.0-20260314172723-ee564567add2 // indirect
-	github.com/go-ap/storage-sqlite v0.0.0-20260314172840-17d90c96e308 // indirect
+	github.com/go-ap/storage-badger v0.0.0-20260316081728-9c5b8e54e2df // indirect
+	github.com/go-ap/storage-boltdb v0.0.0-20260316081711-b2906bf81ab1 // indirect
+	github.com/go-ap/storage-fs v0.0.0-20260316081616-25efa1d82db0 // indirect
+	github.com/go-ap/storage-sqlite v0.0.0-20260316130540-a028cc18ac83 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.1 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
@@ -72,7 +72,7 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.21 // indirect
-	github.com/mattn/go-sqlite3 v1.14.34 // indirect
+	github.com/mattn/go-sqlite3 v1.14.37 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/ncruces/go-strftime v1.0.0 // indirect
@@ -102,6 +102,6 @@ require (
 	modernc.org/libc v1.70.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.46.1 // indirect
-	quamina.net/go/quamina v1.5.2-0.20260219224429-4b74c3864009 // indirect
+	modernc.org/sqlite v1.46.2 // indirect
+	quamina.net/go/quamina v1.5.2-0.20260306081357-88daf10bf1dc // indirect
 )
