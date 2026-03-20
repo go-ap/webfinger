@@ -9,10 +9,10 @@ require (
 	git.sr.ht/~mariusor/wrapper v0.0.0-20260103185140-9873830de009
 	github.com/alecthomas/kong v1.12.1
 	github.com/go-ap/activitypub v0.0.0-20260314162927-f37166117816
-	github.com/go-ap/auth v0.0.0-20260314172349-636da1ff6f0c
+	github.com/go-ap/auth v0.0.0-20260318131519-fdd0f443c937
 	github.com/go-ap/authorize v0.0.0-20260309181834-5592679b16e7
 	github.com/go-ap/errors v0.0.0-20260208110149-e1b309365966
-	github.com/go-ap/filters v0.0.0-20260314171937-f049bd20de96
+	github.com/go-ap/filters v0.0.0-20260318121108-558e05da8dfd
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-chi/cors v1.2.2
 	github.com/joho/godotenv v1.5.1
@@ -51,13 +51,13 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/elnormous/contenttype v1.0.4 // indirect
 	github.com/go-ap/cache v0.0.0-20260314171843-db47857306fa // indirect
-	github.com/go-ap/client v0.0.0-20260314172213-e86ab32299ee // indirect
+	github.com/go-ap/client v0.0.0-20260318131106-0911851aec39 // indirect
 	github.com/go-ap/jsonld v0.0.0-20251216162253-e38fa664ea77 // indirect
-	github.com/go-ap/processing v0.0.0-20260314172430-abaa6f90b7f1 // indirect
-	github.com/go-ap/storage-badger v0.0.0-20260316081728-9c5b8e54e2df // indirect
-	github.com/go-ap/storage-boltdb v0.0.0-20260316081711-b2906bf81ab1 // indirect
-	github.com/go-ap/storage-fs v0.0.0-20260316081616-25efa1d82db0 // indirect
-	github.com/go-ap/storage-sqlite v0.0.0-20260316130540-a028cc18ac83 // indirect
+	github.com/go-ap/processing v0.0.0-20260320164548-639d10ea1879 // indirect
+	github.com/go-ap/storage-badger v0.0.0-20260318132622-f3e1216a6f8e // indirect
+	github.com/go-ap/storage-boltdb v0.0.0-20260318132445-3709c958c7e2 // indirect
+	github.com/go-ap/storage-fs v0.0.0-20260318131649-46c1906dc89a // indirect
+	github.com/go-ap/storage-sqlite v0.0.0-20260318142146-680dd728060e // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.1 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
@@ -65,7 +65,7 @@ require (
 	github.com/google/flatbuffers v25.12.19+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jdkato/prose v1.2.1 // indirect
-	github.com/klauspost/compress v1.18.4 // indirect
+	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
 	github.com/mariusor/qstring v0.0.0-20200204164351-5a99d46de39d // indirect
 	github.com/mariusor/render v1.5.1-0.20250901122421-8ac127627c3f // indirect
@@ -102,6 +102,6 @@ require (
 	modernc.org/libc v1.70.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.46.2 // indirect
-	quamina.net/go/quamina v1.5.2-0.20260306081357-88daf10bf1dc // indirect
+	modernc.org/sqlite v1.47.0 // indirect
+	quamina.net/go/quamina/v2 v2.0.2 // indirect
 )
