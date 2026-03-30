@@ -5,14 +5,14 @@ go 1.25.8
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
 	git.sr.ht/~mariusor/servermux v0.0.0-20260310142041-b6c9be7e7820
-	git.sr.ht/~mariusor/storage-all v0.0.0-20260317102410-3111f77e10db
+	git.sr.ht/~mariusor/storage-all v0.0.0-20260330140947-71316e951445
 	git.sr.ht/~mariusor/wrapper v0.0.0-20260103185140-9873830de009
 	github.com/alecthomas/kong v1.12.1
-	github.com/go-ap/activitypub v0.0.0-20260314162927-f37166117816
-	github.com/go-ap/auth v0.0.0-20260318131519-fdd0f443c937
+	github.com/go-ap/activitypub v0.0.0-20260330133938-2e4972ff690b
+	github.com/go-ap/auth v0.0.0-20260330134402-1f23b0ddafaa
 	github.com/go-ap/authorize v0.0.0-20260309181834-5592679b16e7
 	github.com/go-ap/errors v0.0.0-20260208110149-e1b309365966
-	github.com/go-ap/filters v0.0.0-20260318121108-558e05da8dfd
+	github.com/go-ap/filters v0.0.0-20260330134234-a70aa1bf886d
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-chi/cors v1.2.2
 	github.com/joho/godotenv v1.5.1
@@ -37,7 +37,7 @@ require (
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/keygen v0.5.4 // indirect
 	github.com/charmbracelet/ssh v0.0.0-20250826160808-ebfa259c7309 // indirect
-	github.com/charmbracelet/ultraviolet v0.0.0-20260316091819-b93f6a3b8502 // indirect
+	github.com/charmbracelet/ultraviolet v0.0.0-20260330092749-0f94982c930b // indirect
 	github.com/charmbracelet/x/ansi v0.11.6 // indirect
 	github.com/charmbracelet/x/conpty v0.2.0 // indirect
 	github.com/charmbracelet/x/term v0.2.2 // indirect
@@ -50,14 +50,14 @@ require (
 	github.com/dgraph-io/ristretto/v2 v2.4.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/elnormous/contenttype v1.0.4 // indirect
-	github.com/go-ap/cache v0.0.0-20260314171843-db47857306fa // indirect
-	github.com/go-ap/client v0.0.0-20260318131106-0911851aec39 // indirect
+	github.com/go-ap/cache v0.0.0-20260330134207-1b8d90fda632 // indirect
+	github.com/go-ap/client v0.0.0-20260330134301-ba3c2e78d276 // indirect
 	github.com/go-ap/jsonld v0.0.0-20251216162253-e38fa664ea77 // indirect
-	github.com/go-ap/processing v0.0.0-20260320164548-639d10ea1879 // indirect
-	github.com/go-ap/storage-badger v0.0.0-20260318132622-f3e1216a6f8e // indirect
-	github.com/go-ap/storage-boltdb v0.0.0-20260318132445-3709c958c7e2 // indirect
-	github.com/go-ap/storage-fs v0.0.0-20260318131649-46c1906dc89a // indirect
-	github.com/go-ap/storage-sqlite v0.0.0-20260318142146-680dd728060e // indirect
+	github.com/go-ap/processing v0.0.0-20260330134429-e3ae5ca84cb8 // indirect
+	github.com/go-ap/storage-badger v0.0.0-20260330135621-54045b083c9d // indirect
+	github.com/go-ap/storage-boltdb v0.0.0-20260330134908-ffc2e289cedf // indirect
+	github.com/go-ap/storage-fs v0.0.0-20260330135305-9d5c2c844251 // indirect
+	github.com/go-ap/storage-sqlite v0.0.0-20260330135040-6b57dc87af7c // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.1 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
@@ -66,13 +66,13 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jdkato/prose v1.2.1 // indirect
 	github.com/klauspost/compress v1.18.5 // indirect
-	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
-	github.com/mariusor/qstring v0.0.0-20200204164351-5a99d46de39d // indirect
+	github.com/leporo/sqlf v1.4.0 // indirect
+	github.com/lucasb-eyer/go-colorful v1.4.0 // indirect
 	github.com/mariusor/render v1.5.1-0.20250901122421-8ac127627c3f // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.21 // indirect
-	github.com/mattn/go-sqlite3 v1.14.37 // indirect
+	github.com/mattn/go-sqlite3 v1.14.38 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/ncruces/go-strftime v1.0.0 // indirect
@@ -80,8 +80,9 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rs/xid v1.6.0 // indirect
-	github.com/rs/zerolog v1.34.0 // indirect
+	github.com/rs/zerolog v1.35.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fastjson v1.6.10 // indirect
 	github.com/writeas/go-webfinger v1.1.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
@@ -102,6 +103,6 @@ require (
 	modernc.org/libc v1.70.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.47.0 // indirect
+	modernc.org/sqlite v1.48.0 // indirect
 	quamina.net/go/quamina/v2 v2.0.2 // indirect
 )
