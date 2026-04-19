@@ -36,9 +36,13 @@ type OAuthAuthorizationMetadata struct {
 	CodeChallengeMethodsSupported              []string                 `json:"code_challenge_methods_supported,omitempty"`
 }
 
+// DefaultAccessTypes shows which OAuth2 access types the go-ap/authorize application supports,
+// so it needs to be synchronized to https://pkg.go.dev/github.com/go-ap/authorize#DefaultAccessTypes
+var DefaultAccessTypes = osin.AllowedAccessType{osin.AUTHORIZATION_CODE, osin.REFRESH_TOKEN, osin.PASSWORD, osin.CLIENT_CREDENTIALS}
+
 func defaultGrantTypes() []osin.AccessRequestType {
-	grants := make([]osin.AccessRequestType, 0, len(auth.DefaultAccessTypes))
-	for _, typ := range auth.DefaultAccessTypes {
+	grants := make([]osin.AccessRequestType, 0, len(DefaultAccessTypes))
+	for _, typ := range DefaultAccessTypes {
 		if typ == osin.IMPLICIT {
 			typ = "implicit"
 		}

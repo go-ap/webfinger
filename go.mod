@@ -1,16 +1,15 @@
 module github.com/go-ap/webfinger
 
-go 1.25.8
+go 1.25.9
 
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20250325163623-1639f3fb0e0d
 	git.sr.ht/~mariusor/servermux v0.0.0-20260310142041-b6c9be7e7820
 	git.sr.ht/~mariusor/storage-all v0.0.0-20260417110816-487c3f0a0efa
 	git.sr.ht/~mariusor/wrapper v0.0.0-20260103185140-9873830de009
-	github.com/alecthomas/kong v1.12.1
+	github.com/alecthomas/kong v1.15.0
 	github.com/go-ap/activitypub v0.0.0-20260416122353-fb80985e153a
-	github.com/go-ap/auth v0.0.0-20260417102317-2dd677ace324
-	github.com/go-ap/authorize v0.0.0-20260331152334-be2924229936
+	github.com/go-ap/auth v0.0.0-20260419084414-65d951f3f6d0
 	github.com/go-ap/errors v0.0.0-20260208110149-e1b309365966
 	github.com/go-ap/filters v0.0.0-20260416122840-724cb3c8974c
 	github.com/go-chi/chi/v5 v5.2.5
@@ -24,11 +23,10 @@ require (
 	charm.land/bubbletea/v2 v2.0.6 // indirect
 	charm.land/lipgloss/v2 v2.0.3 // indirect
 	charm.land/log/v2 v2.0.0 // indirect
-	charm.land/wish/v2 v2.0.0 // indirect
+	charm.land/wish/v2 v2.0.1 // indirect
 	git.sr.ht/~mariusor/cache v0.0.0-20250616110250-18a60a6f9473 // indirect
 	git.sr.ht/~mariusor/go-xsd-duration v0.0.0-20220703122237-02e73435a078 // indirect
 	git.sr.ht/~mariusor/mask v0.0.0-20250114195353-98705a6977b7 // indirect
-	git.sr.ht/~mariusor/ssm v0.0.0-20260220115209-1adc83acc174 // indirect
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
 	github.com/bits-and-blooms/bitset v1.24.4 // indirect
@@ -51,11 +49,9 @@ require (
 	github.com/dgraph-io/ristretto/v2 v2.4.0 // indirect
 	github.com/dunglas/httpsfv v1.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/elnormous/contenttype v1.0.4 // indirect
 	github.com/go-ap/cache v0.0.0-20260416122450-ff51ff8e9ff6 // indirect
-	github.com/go-ap/client v0.0.0-20260417102240-e371d22c1019 // indirect
+	github.com/go-ap/client v0.0.0-20260417142609-98e312cb87a2 // indirect
 	github.com/go-ap/jsonld v0.0.0-20251216162253-e38fa664ea77 // indirect
-	github.com/go-ap/processing v0.0.0-20260417103226-92c0affd2f3f // indirect
 	github.com/go-ap/storage-badger v0.0.0-20260417105711-8ae4f1449d1f // indirect
 	github.com/go-ap/storage-boltdb v0.0.0-20260417105735-369b9c9ea0ab // indirect
 	github.com/go-ap/storage-fs v0.0.0-20260417104507-b66107129185 // indirect
@@ -69,13 +65,12 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.9.1 // indirect
+	github.com/jackc/pgx/v5 v5.9.2 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jdkato/prose v1.2.1 // indirect
 	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/leporo/sqlf v1.4.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.0 // indirect
-	github.com/mariusor/render v1.5.1-0.20250901122421-8ac127627c3f // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.21 // indirect
 	github.com/mattn/go-runewidth v0.0.23 // indirect
@@ -110,6 +105,6 @@ require (
 	modernc.org/libc v1.72.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.48.2 // indirect
+	modernc.org/sqlite v1.49.1 // indirect
 	quamina.net/go/quamina/v2 v2.0.2 // indirect
 )
