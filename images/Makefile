@@ -12,8 +12,8 @@ STORAGE ?= all
 TAG ?= $(ENV)
 VERSION ?= HEAD
 
-TAG_CMD=podman tag
-PUSH_CMD=podman push
+TAG_CMD=buildah tag
+PUSH_CMD=buildah push
 
 ifeq ($(shell git describe --always > /dev/null 2>&1 ; echo $$?), 0)
 	BRANCH=$(shell git rev-parse --abbrev-ref HEAD | tr '/' '-')
@@ -23,6 +23,7 @@ endif
 ifeq ($(shell git describe --tags > /dev/null 2>&1 ; echo $$?), 0)
 	VERSION = $(shell git describe --tags | tr '/' '-')
 endif
+
 ifneq ($(STORAGE),all)
 	TAG=$(ENV)-$(STORAGE)
 endif
