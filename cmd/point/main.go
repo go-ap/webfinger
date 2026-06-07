@@ -31,26 +31,31 @@ var Point struct {
 	Root     []string `name:"root" help:"Root actor IRI for Storage" group:"config-options"`
 	Config   []string `name:"config" help:"Configuration path for .env file" group:"config-options" xor:"config-options"`
 	Storage  []string `name:"storage" help:"Storage DSN strings of form type:///path/to/storage." group:"config-options" xor:"config-options"`
+	Verbose  int      `name:"verbose" short:"v" default:"0" type:"counter" help:"Increase verbosity of the log output" `
 }
 
-var l = lw.Dev()
+var (
+	defaultTimeout = time.Second * 10
+	version        = "HEAD"
 
-var defaultTimeout = time.Second * 10
-
-var version = "HEAD"
+	DefaultLogLevel = lw.WarnLevel
+)
 
 const defaultGraceWait = 1500 * time.Millisecond
 
 func main() {
 	ktx := kong.Parse(
 		&Point,
-		kong.Bind(l),
 		kong.Vars{
 			"env_types":   strings.Join([]string{string(config.DEV), string(config.PROD)}, ", "),
 			"default_env": string(config.DEV),
 			"version":     webfinger.Version,
 		},
 	)
+
+	l := lw.Dev(lw.SetLevel(DefaultLogLevel - lw.Level(Point.Verbose)))
+	ktx.Bind(l)
+
 	env := config.DEV
 	if config.ValidEnv(Point.Env) {
 		env = config.Env(Point.Env)
