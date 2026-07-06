@@ -12,7 +12,7 @@ require (
 	github.com/go-ap/auth v0.0.0-20260706114402-71082cfd541a
 	github.com/go-ap/errors v0.0.0-20260701132509-92e5e4fd6394
 	github.com/go-ap/filters v0.0.0-20260701132827-4ad866f2a41d
-	github.com/go-chi/chi/v5 v5.3.0
+	github.com/go-chi/chi/v5 v5.3.1
 	github.com/go-chi/cors v1.2.2
 	github.com/joho/godotenv v1.5.1
 	github.com/openshift/osin v1.0.2-0.20220317075346-0f4d38c6e53f
@@ -46,12 +46,12 @@ require (
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/creack/pty v1.1.24 // indirect
 	github.com/dadrus/httpsig v0.9.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.9.2 // indirect
-	github.com/dgraph-io/ristretto/v2 v2.4.0 // indirect
+	github.com/dgraph-io/badger/v4 v4.9.3 // indirect
+	github.com/dgraph-io/ristretto/v2 v2.4.1 // indirect
 	github.com/dunglas/httpsfv v1.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ap/cache v0.0.0-20260701132808-71a22e0f7796 // indirect
-	github.com/go-ap/client v0.0.0-20260706114127-4a63a8b8a82f // indirect
+	github.com/go-ap/client v0.0.0-20260707124623-bc38b7f64b05 // indirect
 	github.com/go-ap/jsonld v0.0.0-20260607140920-737b40e0ca38 // indirect
 	github.com/go-ap/storage-badger v0.0.0-20260701133418-ed201252e077 // indirect
 	github.com/go-ap/storage-boltdb v0.0.0-20260701133355-1aabc0c30181 // indirect
@@ -101,10 +101,10 @@ require (
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
-	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/text v0.39.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.7 // indirect
-	modernc.org/libc v1.73.5 // indirect
+	modernc.org/libc v1.74.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.53.0 // indirect

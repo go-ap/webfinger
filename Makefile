@@ -9,7 +9,6 @@ PROJECT_NAME := point
 APP_HOSTNAME ?= $(PROJECT_NAME)
 ENV ?= dev
 STORAGE ?= all
-VERSION ?= HEAD
 
 LDFLAGS ?= -X main.version=$(VERSION)
 BUILDFLAGS ?= -a -ldflags '$(LDFLAGS)' -tags "$(TAGS)"
