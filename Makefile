@@ -43,7 +43,7 @@ endif
 BUILD := $(GO) build $(BUILDFLAGS)
 TEST := $(GO) test $(BUILDFLAGS)
 
-.PHONY: all point cert clean test coverage download help
+.PHONY: all point cert clean test coverage download help compress
 
 .DEFAULT_GOAL := help
 
@@ -61,8 +61,10 @@ go.sum: go.mod
 point: bin/point ## Builds the main WebFinger service binary.
 bin/point: go.mod go.sum $(APPSOURCES)
 	$(BUILD) -o $@ ./cmd/point
+
+compress: bin/point ## Compress the binary.
 ifneq ($(ENV),dev)
-	$(UPX) -q --mono --no-progress --best $@ || true
+	$(UPX) -q --mono --no-progress --best $< || true
 endif
 
 clean: ## Cleanup the build workspace.
