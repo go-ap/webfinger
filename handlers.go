@@ -15,7 +15,7 @@ import (
 )
 
 type handler struct {
-	s []Storage
+	s []Store
 	l lw.Logger
 }
 
@@ -30,7 +30,7 @@ type Storage struct {
 	Root vocab.Actor
 }
 
-func New(l lw.Logger, db ...Storage) handler {
+func New(l lw.Logger, db ...Store) handler {
 	return handler{s: db, l: l}
 }
 
@@ -51,52 +51,50 @@ func FilterID(id string) filters.Check {
 	return filters.SameID(vocab.ID(id))
 }
 
-func LoadIRI(dbs []Storage, what vocab.IRI, checkFns ...filters.Check) (vocab.Item, error) {
+func LoadIRI(db Storage, what vocab.IRI, checkFns ...filters.Check) (vocab.Item, error) {
 	var found vocab.Item
 
-	for _, db := range dbs {
-		serviceIRI := db.Root.GetLink()
-		result, err := db.Load(what, append(checkFns, filters.Authorized(serviceIRI))...)
-		if err != nil {
-			continue
-		}
-		err = vocab.OnObject(result, func(o *vocab.Object) error {
-			found = o
-			return nil
-		})
+	serviceIRI := db.Root.GetLink()
+	result, err := db.Load(what, append(checkFns, filters.Authorized(serviceIRI))...)
+	if err != nil {
+		return nil, errors.NewNotFound(err, "no actors found in storage")
+	}
+	err = vocab.OnObject(result, func(o *vocab.Object) error {
+		found = o
+		return nil
+	})
+	if err != nil {
+		return nil, errors.NewNotFound(err, "no actors found in storage")
 	}
 	if !vocab.IsNil(found) {
 		return found, nil
 	}
-	return LoadActor(dbs, checkFns...)
+	return LoadActor(db, checkFns...)
 }
 
-func LoadActor(dbs []Storage, checkFns ...filters.Check) (vocab.Item, error) {
-	for _, db := range dbs {
-		if filters.Any(checkFns...).Match(db.Root) {
-			return db.Root, nil
-		}
-
-		serviceIRI := db.Root.GetLink()
-		all, _ := db.Load(actors.IRI(db.Root))
-		if vocab.IsNil(all) {
-			continue
-		}
-
-		checkFns = append(checkFns, filters.Authorized(serviceIRI))
-		if all.IsCollection() {
-			all = filters.Checks(checkFns).Run(all)
-			err := vocab.OnCollectionIntf(all, func(col vocab.CollectionInterface) error {
-				all = col.Collection().First()
-				return nil
-			})
-			if err != nil {
-				return nil, err
-			}
-		}
-		return vocab.ToActor(all)
+func LoadActor(db Storage, checkFns ...filters.Check) (vocab.Item, error) {
+	if filters.Any(checkFns...).Match(db.Root) {
+		return db.Root, nil
 	}
-	return nil, errors.NotFoundf("no actors found in storage")
+
+	serviceIRI := db.Root.GetLink()
+	all, _ := db.Load(actors.IRI(db.Root))
+	if vocab.IsNil(all) {
+		return nil, errors.NotFoundf("no actors found in storage")
+	}
+
+	checkFns = append(checkFns, filters.Authorized(serviceIRI))
+	if all.IsCollection() {
+		all = filters.Checks(checkFns).Run(all)
+		err := vocab.OnCollectionIntf(all, func(col vocab.CollectionInterface) error {
+			all = col.Collection().First()
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return vocab.ToActor(all)
 }
 
 func handleErr(l lw.Logger) func(r *http.Request, e error) errors.ErrorHandlerFn {
@@ -111,8 +109,53 @@ func handleErr(l lw.Logger) func(r *http.Request, e error) errors.ErrorHandlerFn
 
 const WellKnownWebFingerPath = "/.well-known/webfinger"
 
+func baseURL(r *http.Request) []string {
+	if r == nil {
+		return nil
+	}
+
+	// NOTE(marius): due to the fact that the Authorize server runs behind a proxy which handles the TLS termination,
+	// we can't rely on the request's TLS property to determine the scheme for our URL,
+	// so we generate two base URLs, one for each scheme.
+	return []string{
+		fmt.Sprintf("http://%s", r.Host),
+		fmt.Sprintf("https://%s", r.Host),
+	}
+}
+
+var errStorageNotFound = errors.NotFoundf("matching storage not found")
+
+func (h *handler) findMatchingStorage(hosts ...string) (Storage, error) {
+	var app vocab.Actor
+	for _, db := range h.s {
+		for _, host := range hosts {
+			res, err := db.Load(vocab.IRI(host))
+			if err != nil {
+				continue
+			}
+			err = vocab.OnActor(res, func(actor *vocab.Actor) error {
+				app = *actor
+				return nil
+			})
+			if err != nil {
+				continue
+			}
+			if app.ID != "" {
+				return Storage{Root: app, Store: db}, nil
+			}
+		}
+	}
+	return Storage{Root: app, Store: nil}, errStorageNotFound
+}
+
 // HandleWebFinger serves /.well-known/webfinger/
 func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
+	storage, err := h.findMatchingStorage(baseURL(r)...)
+	if err != nil {
+		handleErr(h.l)(r, err).ServeHTTP(w, r)
+		return
+	}
+
 	res := r.URL.Query().Get("resource")
 	if res == "" {
 		handleErr(h.l)(r, errors.NotFoundf("resource not found %s", res)).ServeHTTP(w, r)
@@ -144,7 +187,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 
 	var result vocab.Item
 	if typ == "acct" {
-		a, err := LoadActor(h.s, FilterName(handle))
+		a, err := LoadActor(storage, FilterName(handle))
 		if err != nil {
 			handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 			return
@@ -152,7 +195,7 @@ func (h handler) HandleWebFinger(w http.ResponseWriter, r *http.Request) {
 		result = a
 	}
 	if typ == "https" {
-		ob, err := LoadIRI(h.s, vocab.IRI(res), filters.Any(FilterURL(res), FilterID(res)))
+		ob, err := LoadIRI(storage, vocab.IRI(res), filters.Any(FilterURL(res), FilterID(res)))
 		if err != nil {
 			handleErr(h.l)(r, errors.NewNotFound(err, "resource not found %s", res)).ServeHTTP(w, r)
 			return
@@ -247,14 +290,13 @@ func baseIRI(i vocab.IRI) vocab.IRI {
 	return vocab.IRI(u.String())
 }
 
-type aggRepo []Storage
+type aggRepo Storage
 
 func (a aggRepo) Load(iri vocab.IRI, ff ...filters.Check) (vocab.Item, error) {
 	var repo storage.ReadStore
-	for _, db := range a {
-		if db.Root.ID.Equal(baseIRI(iri)) {
-			repo = db
-		}
+	db := Storage(a)
+	if db.Root.ID.Equal(baseIRI(iri)) {
+		repo = db
 	}
 	if repo == nil {
 		return nil, errors.NotFoundf("unable to find item in any of the storage options")

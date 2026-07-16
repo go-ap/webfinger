@@ -2,7 +2,6 @@ package webfinger
 
 import (
 	"net/http"
-	"net/url"
 	"path"
 	"regexp"
 
@@ -156,40 +155,6 @@ type WebInfo struct {
 	Version     string   `json:"version"`
 }
 
-func reqBaseIRI(r http.Request, secure bool) vocab.IRI {
-	scheme := "http"
-	if secure || r.TLS != nil {
-		scheme = "https"
-	}
-	u := url.URL{
-		Scheme: scheme,
-		Host:   r.Host,
-	}
-	u.Scheme = scheme
-	u.Host = r.Host
-	return vocab.IRI(u.String())
-}
-
-func findApp(s []Storage, rootIRI vocab.IRI) (*vocab.Actor, error) {
-	var app *vocab.Actor
-	maybeActor, _ := LoadActor(s, FilterURL(rootIRI.String()))
-	if vocab.IsNil(maybeActor) {
-		return nil, errors.NotFoundf("unable to find root application %s", rootIRI)
-	}
-	if actor, _ := vocab.ToActor(maybeActor); !vocab.IsNil(actor) {
-		if vocab.ApplicationType.Match(actor.Type) && !vocab.IsNil(actor.AttributedTo) {
-			app, _ = findApp(s, actor.AttributedTo.GetLink())
-		} else {
-			app = actor
-		}
-	}
-	var err error
-	if vocab.IsNil(app) {
-		err = errors.NotFoundf("unable to find root application %s", rootIRI)
-	}
-	return app, err
-}
-
 func IconOf(it vocab.Item) string {
 	var iconURL string
 	if vocab.IsObject(it) {
@@ -202,12 +167,16 @@ func IconOf(it vocab.Item) string {
 	}
 	return iconURL
 }
-func setupNodeInfo(r *http.Request, s []Storage) (*nodeinfo.Service, error) {
+func (h *handler) setupNodeInfo(r *http.Request) (*nodeinfo.Service, error) {
+	storage, err := h.findMatchingStorage(baseURL(r)...)
+	if err != nil {
+		return nil, err
+	}
 	var app vocab.Actor
-	rootIRI := reqBaseIRI(*r, true)
-	maybeActor, _ := findApp(s, rootIRI)
+
+	maybeActor := storage.Root
 	if !vocab.IsNil(maybeActor) {
-		app = *maybeActor
+		app = maybeActor
 	}
 	if app.ID == "" || auth.AnonymousActor.Equals(app) {
 		return nil, errors.NotFoundf("root actor not found")
@@ -227,14 +196,14 @@ func setupNodeInfo(r *http.Request, s []Storage) (*nodeinfo.Service, error) {
 		Urls:        nil,
 		Version:     Version,
 	})
-	return nodeinfo.NewService(cfg, NodeInfoResolverNew(aggRepo(s), app)), nil
+	return nodeinfo.NewService(cfg, NodeInfoResolverNew(aggRepo(storage), app)), nil
 }
 
 const NodeInfoDiscoverPath = "/.well-known/nodeinfo"
 
 // NodeInfoDiscover handles "/.well-known/nodeinfo"
 func (h handler) NodeInfoDiscover(w http.ResponseWriter, r *http.Request) {
-	ni, err := setupNodeInfo(r, h.s)
+	ni, err := h.setupNodeInfo(r)
 	if err != nil {
 		handleErr(h.l)(r, err).ServeHTTP(w, r)
 		return
@@ -248,7 +217,7 @@ const NodeInfoPath = "/nodeinfo"
 
 // NodeInfo handles "/nodeinfo"
 func (h handler) NodeInfo(w http.ResponseWriter, r *http.Request) {
-	ni, err := setupNodeInfo(r, h.s)
+	ni, err := h.setupNodeInfo(r)
 	if err != nil {
 		handleErr(h.l)(r, err).ServeHTTP(w, r)
 		return

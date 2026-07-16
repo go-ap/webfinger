@@ -73,7 +73,12 @@ func clientRegistrationIRI(self vocab.Actor) string {
 
 // HandleOAuthAuthorizationServer serves /.well-known/oauth-authorization-server
 func (h handler) HandleOAuthAuthorizationServer(w http.ResponseWriter, r *http.Request) {
-	maybeActor, err := LoadActor(h.s, filters.SameID(issuerIRIFromOAuthAuthorizationRequest(r)))
+	storage, err := h.findMatchingStorage(baseURL(r)...)
+	if err != nil {
+		handleErr(h.l)(r, err).ServeHTTP(w, r)
+		return
+	}
+	maybeActor, err := LoadActor(storage, filters.SameID(issuerIRIFromOAuthAuthorizationRequest(r)))
 	if err != nil {
 		handleErr(h.l)(r, errors.Annotatef(err, "unable to find actor")).ServeHTTP(w, r)
 		return

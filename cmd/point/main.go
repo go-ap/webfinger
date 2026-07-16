@@ -14,7 +14,6 @@ import (
 	m "git.sr.ht/~mariusor/servermux"
 	w "git.sr.ht/~mariusor/wrapper"
 	"github.com/alecthomas/kong"
-	vocab "github.com/go-ap/activitypub"
 	"github.com/go-ap/errors"
 	"github.com/go-ap/webfinger"
 	"github.com/go-ap/webfinger/internal/config"
@@ -28,7 +27,6 @@ var Point struct {
 	Env      string   `name:"env" help:"Environment type: ${env_types}" default:"${default_env}"`
 	KeyPath  string   `name:"key-path" help:"SSL key path for HTTPS." type:"path"`
 	CertPath string   `name:"cert-path" help:"SSL cert path for HTTPS." type:"path"`
-	Root     []string `name:"root" help:"Root actor IRI for Storage" group:"config-options"`
 	Config   []string `name:"config" help:"Configuration path for .env file" group:"config-options" xor:"config-options"`
 	Storage  []string `name:"storage" help:"Storage DSN strings of form type:///path/to/storage." group:"config-options" xor:"config-options"`
 	Verbose  int      `name:"verbose" short:"v" default:"0" type:"counter" help:"Increase verbosity of the log output" `
@@ -46,10 +44,12 @@ const defaultGraceWait = 1500 * time.Millisecond
 func main() {
 	ktx := kong.Parse(
 		&Point,
+		kong.Description("${name} server (version ${version})"),
 		kong.Vars{
 			"env_types":   strings.Join([]string{string(config.DEV), string(config.PROD)}, ", "),
 			"default_env": string(config.DEV),
 			"version":     webfinger.Version,
+			"name":        "point",
 		},
 	)
 
@@ -67,16 +67,16 @@ func main() {
 		version = build.Main.Version
 	}
 
-	var stores []webfinger.Storage
+	var stores []webfinger.Store
 	var err error
 
-	if len(Point.Storage) > 0 && len(Point.Root) > 0 {
-		if stores, err = loadStoresFromDSNs(Point.Storage, Point.Root, env, l.WithContext(lw.Ctx{"log": "storage"})); err != nil {
+	if len(Point.Storage) > 0 {
+		if stores, err = loadStoresFromDSNs(Point.Storage, env, l.WithContext(lw.Ctx{"log": "storage"})); err != nil {
 			l.Errorf("Errors loading storage paths: %+s", err)
 		}
 	}
-	if len(Point.Config) > 0 && len(Point.Root) > 0 {
-		if stores, err = loadStoresFromConfigs(Point.Config, Point.Root, env, l.WithContext(lw.Ctx{"log": "storage"})); err != nil {
+	if len(Point.Config) > 0 {
+		if stores, err = loadStoresFromConfigs(Point.Config, env, l.WithContext(lw.Ctx{"log": "storage"})); err != nil {
 			l.Errorf("Errors loading config files: %+s", err)
 		}
 	}
@@ -200,8 +200,8 @@ func main() {
 	ktx.Exit(0)
 }
 
-func loadStoresFromDSNs(dsns, root []string, env config.Env, l lw.Logger) ([]webfinger.Storage, error) {
-	stores := make([]webfinger.Storage, 0)
+func loadStoresFromDSNs(dsns []string, env config.Env, l lw.Logger) ([]webfinger.Store, error) {
+	stores := make([]webfinger.Store, 0)
 	errs := make([]error, 0)
 	for _, sto := range dsns {
 		typ, path := config.ParseStorageDSN(sto)
@@ -225,26 +225,19 @@ func loadStoresFromDSNs(dsns, root []string, env config.Env, l lw.Logger) ([]web
 			errs = append(errs, fmt.Errorf("unable to open storage backend %T [%s]%s", db, typ, path))
 			continue
 		}
-		for _, iri := range root {
-			if actor, err := db.Load(vocab.IRI(iri)); err == nil {
-				if app, err := vocab.ToActor(actor); err == nil {
-					s := webfinger.Storage{Store: fs, Root: *app}
-					stores = append(stores, s)
-				}
-			}
-		}
+		stores = append(stores, fs)
 	}
 	return stores, errors.Join(errs...)
 }
 
 type corsLogger func(string, ...any)
 
-func (c corsLogger) Printf(f string, v ...interface{}) {
+func (c corsLogger) Printf(f string, v ...any) {
 	c(f, v...)
 }
 
-func loadStoresFromConfigs(paths, root []string, env config.Env, l lw.Logger) ([]webfinger.Storage, error) {
-	stores := make([]webfinger.Storage, 0)
+func loadStoresFromConfigs(paths []string, env config.Env, l lw.Logger) ([]webfinger.Store, error) {
+	stores := make([]webfinger.Store, 0)
 	errs := make([]error, 0)
 	for _, p := range paths {
 		if err := godotenv.Load(p); err != nil {
@@ -276,14 +269,7 @@ func loadStoresFromConfigs(paths, root []string, env config.Env, l lw.Logger) ([
 			errs = append(errs, fmt.Errorf("unable to open storage backend %T [%s]%s", db, st.Type, st.Path))
 			continue
 		}
-		for _, iri := range root {
-			if actor, err := db.Load(vocab.IRI(iri)); err == nil {
-				if app, err := vocab.ToActor(actor); err == nil {
-					s := webfinger.Storage{Store: fs, Root: *app}
-					stores = append(stores, s)
-				}
-			}
-		}
+		stores = append(stores, fs)
 	}
 	return stores, errors.Join(errs...)
 }
