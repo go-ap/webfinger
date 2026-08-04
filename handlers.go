@@ -84,7 +84,7 @@ func LoadActor(db Storage, checkFns ...filters.Check) (vocab.Item, error) {
 	}
 
 	checkFns = append(checkFns, filters.Authorized(serviceIRI))
-	if all.IsCollection() {
+	if vocab.IsCollection(all) {
 		all = filters.Checks(checkFns).Run(all)
 		err := vocab.OnCollectionIntf(all, func(col vocab.CollectionInterface) error {
 			all = col.Collection().First()
