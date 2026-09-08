@@ -53,7 +53,7 @@ func main() {
 		},
 	)
 
-	l := lw.Dev(lw.SetLevel(DefaultLogLevel - lw.Level(Point.Verbose)))
+	l := lw.Dev(lw.SetLevel(DefaultLogLevel - lw.Level(4*Point.Verbose)))
 	ktx.Bind(l)
 
 	env := config.DEV
