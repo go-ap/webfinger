@@ -1,17 +1,17 @@
 module github.com/go-ap/webfinger
 
-go 1.26.0
+go 1.26.8
 
 require (
 	git.sr.ht/~mariusor/lw v0.0.0-20260910124117-d80376e1433e
 	git.sr.ht/~mariusor/servermux v0.0.0-20260730181755-b356bceeedee
-	git.sr.ht/~mariusor/storage-all v0.0.0-20260910132033-b70d5c577944
+	git.sr.ht/~mariusor/storage-all v0.0.0-20260912150008-9a276e82ec97
 	git.sr.ht/~mariusor/wrapper v0.0.0-20260103185140-9873830de009
 	github.com/alecthomas/kong v1.15.0
-	github.com/go-ap/activitypub v0.0.0-20260909093825-f72cfa142bd0
-	github.com/go-ap/auth v0.0.0-20260910124615-26fea3c44cfd
+	github.com/go-ap/activitypub v0.0.0-20260912133130-64400e895afb
+	github.com/go-ap/auth v0.0.0-20260912144444-325c013fc6f6
 	github.com/go-ap/errors v0.0.0-20260701132509-92e5e4fd6394
-	github.com/go-ap/filters v0.0.0-20260909101441-177fa69736fd
+	github.com/go-ap/filters v0.0.0-20260912142558-3ae29b7e3a3a
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-chi/cors v1.2.2
 	github.com/joho/godotenv v1.5.1
@@ -24,8 +24,8 @@ require (
 	charm.land/lipgloss/v2 v2.0.6 // indirect
 	charm.land/log/v2 v2.0.1 // indirect
 	charm.land/ssh v0.4.3 // indirect
-	charm.land/wish/v2 v2.0.3 // indirect
-	git.sr.ht/~mariusor/cache v0.0.0-20260516133819-5427e9c3067b // indirect
+	charm.land/wish/v2 v2.0.4 // indirect
+	git.sr.ht/~mariusor/cache v0.0.0-20260911160635-3a397efbb885 // indirect
 	git.sr.ht/~mariusor/go-xsd-duration v0.0.0-20220703122237-02e73435a078 // indirect
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
@@ -35,7 +35,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/keygen v0.5.4 // indirect
-	github.com/charmbracelet/ultraviolet v0.0.0-20260906173415-0277a179edd9 // indirect
+	github.com/charmbracelet/ultraviolet v0.0.0-20260910203606-6c9e17dc7a16 // indirect
 	github.com/charmbracelet/x/ansi v0.11.8 // indirect
 	github.com/charmbracelet/x/conpty v0.2.0 // indirect
 	github.com/charmbracelet/x/term v0.2.2 // indirect
@@ -50,14 +50,14 @@ require (
 	github.com/dgraph-io/ristretto/v2 v2.4.2 // indirect
 	github.com/dunglas/httpsfv v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/go-ap/cache v0.0.0-20260909101407-b27994bd51dd // indirect
-	github.com/go-ap/client v0.0.0-20260910124519-85c4b1876743 // indirect
+	github.com/go-ap/cache v0.0.0-20260912142504-87ce83a0c318 // indirect
+	github.com/go-ap/client v0.0.0-20260912143512-3b253ad1ec1f // indirect
 	github.com/go-ap/jsonld v0.0.0-20260607140920-737b40e0ca38 // indirect
-	github.com/go-ap/storage-badger v0.0.0-20260909103132-9ea64132c9d8 // indirect
-	github.com/go-ap/storage-boltdb v0.0.0-20260909103103-fa2530caa4c5 // indirect
-	github.com/go-ap/storage-fs v0.0.0-20260910130847-790c733d2add // indirect
-	github.com/go-ap/storage-pg v0.0.0-20260909104439-c0ed660d7b0c // indirect
-	github.com/go-ap/storage-sqlite v0.0.0-20260909102423-647511963a41 // indirect
+	github.com/go-ap/storage-badger v0.0.0-20260912145754-9215b269a243 // indirect
+	github.com/go-ap/storage-boltdb v0.0.0-20260912145204-d72d789033e1 // indirect
+	github.com/go-ap/storage-fs v0.0.0-20260912144746-ae1c86972b21 // indirect
+	github.com/go-ap/storage-pg v0.0.0-20260912145726-4ec5425fe73d // indirect
+	github.com/go-ap/storage-sqlite v0.0.0-20260912145538-e2dcab10b8a1 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.1 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
